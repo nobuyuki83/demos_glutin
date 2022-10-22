@@ -2,4 +2,5 @@
 .DS_Store
 .idea
 Cargo.lock
-!examples/gl_bindings.rs
+examples/gl_bindings.rs
+
