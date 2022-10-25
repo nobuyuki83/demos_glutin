@@ -1,20 +1,4 @@
-pub mod gl {
-    #![allow(
-    clippy::manual_non_exhaustive,
-    clippy::too_many_arguments,
-    clippy::unused_unit,
-    clippy::upper_case_acronyms,
-    non_camel_case_types
-    )]
-
-    pub use self::Gles2 as Gl;
-
-    // gl_bindings.rs is generated in build.rs using https://crates.io/crates/gl_generator
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/examples/gl_bindings.rs"));
-}
-
-mod drawer_meshpos;
-mod glutin_viewer3;
+use del_gl::gl as gl;
 
 struct ScaleRotTrans {
     pub s: f32,
@@ -42,7 +26,7 @@ impl ScaleRotTrans {
 }
 
 fn main() {
-    let (mut viewer, event_loop) = glutin_viewer3::GlutinViewer3::open();
+    let (mut viewer, event_loop) = del_gl::glutin_viewer3::GlutinViewer3::open();
 
     let tri_vtx: Vec<usize>;
     let vtx_xyz: Vec<f32> = {
@@ -61,7 +45,7 @@ fn main() {
         vtx_xyz0
     };
 
-    let mut drawer_mesh = drawer_meshpos::DrawerMeshPos::new();
+    let mut drawer_mesh = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
         let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
             &tri_vtx, 3,
@@ -76,7 +60,7 @@ fn main() {
         drawer_mesh.add_element(&viewer.gl, gl::LINES, &mshline0, [0., 0., 0.]);
     }
 
-    let mut drawer_sphere = drawer_meshpos::DrawerMeshPos::new();
+    let mut drawer_sphere = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
         let sphere_meshtri3 = del_msh::primitive::sphere_tri3::<f32>(
             1., 32, 32);

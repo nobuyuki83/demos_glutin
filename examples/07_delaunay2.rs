@@ -1,18 +1,4 @@
-pub mod gl {
-    #![allow(
-    clippy::manual_non_exhaustive,
-    clippy::too_many_arguments,
-    clippy::unused_unit,
-    clippy::upper_case_acronyms,
-    non_camel_case_types
-    )]
-
-    pub use self::Gles2 as Gl;
-
-    // gl_bindings.rs is generated in build.rs using https://crates.io/crates/gl_generator
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/examples/gl_bindings.rs"));
-}
-
+use del_gl::gl as gl;
 
 fn resampling_loops(
     loop_vtx_idx: &mut Vec<usize>,
@@ -84,9 +70,6 @@ fn resampling_loops(
     assert_eq!(loop_vtx.len(), ivtx0);
 }
 
-mod drawer_meshpos;
-mod glutin_viewer2;
-
 fn main() {
     use del_dtri::topology::{
         DynamicTriangle,
@@ -118,9 +101,9 @@ fn main() {
             nvtx0, 0, 0.12);
     }
 
-    let (mut viewer, event_loop) = glutin_viewer2::GlutinViewer2::open();
+    let (mut viewer, event_loop) = del_gl::glutin_viewer2::GlutinViewer2::open();
 
-    let mut drawer = drawer_meshpos::DrawerMeshPos::new();
+    let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
         use crate::gl::types::GLuint;
         drawer.compile_shader(&viewer.gl);

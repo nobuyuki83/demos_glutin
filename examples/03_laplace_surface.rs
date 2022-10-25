@@ -1,23 +1,7 @@
-pub mod gl {
-    #![allow(
-    clippy::manual_non_exhaustive,
-    clippy::too_many_arguments,
-    clippy::unused_unit,
-    clippy::upper_case_acronyms,
-    non_camel_case_types
-    )]
-
-    pub use self::Gles2 as Gl;
-
-    // gl_bindings.rs is generated in build.rs using https://crates.io/crates/gl_generator
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/examples/gl_bindings.rs"));
-}
-
-mod drawer_meshposcolor;
-mod glutin_viewer3;
+use del_gl::gl as gl;
 
 fn main() {
-    let (mut viewer, event_loop) = glutin_viewer3::GlutinViewer3::open();
+    let (mut viewer, event_loop) = del_gl::glutin_viewer3::GlutinViewer3::open();
 
     let (vtx_xyz, tri_vtx) = del_msh::primitive::cylinder_closed_end_tri3(
         0.2, 1.8, 16, 32);
@@ -84,7 +68,7 @@ fn main() {
         println!("number of iteration: {}", conv.len());
     }
 
-    let mut drawer = drawer_meshposcolor::DrawerMeshPosColor::new();
+    let mut drawer = del_gl::drawer_meshposcolor::DrawerMeshPosColor::new();
     {
         let elem_vtx0: Vec<gl::types::GLuint> = tri_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
         drawer.color_map = vec![

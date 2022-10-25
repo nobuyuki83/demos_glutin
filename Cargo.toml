@@ -2,7 +2,6 @@
 name = "demos_glutin"
 version = "0.1.0"
 edition = "2021"
-build = "build.rs"
 
 [dependencies]
 glutin = "*"
@@ -10,11 +9,9 @@ nalgebra = "*"
 num-traits = "0.2"
 rand = "*"
 
-# del-msh = {path="../del-msh"}
-del-msh = "*"
+del-msh = {path="../del-msh"}
+# del-msh = "*"
 del-ls = "*"
 del-dtri = "*"
 del-misc = "*"
-
-[build-dependencies]
-gl_generator = "*"
+del-gl = {path="../del-gl"}

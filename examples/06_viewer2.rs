@@ -1,26 +1,9 @@
-pub mod gl {
-    #![allow(
-    clippy::manual_non_exhaustive,
-    clippy::too_many_arguments,
-    clippy::unused_unit,
-    clippy::upper_case_acronyms,
-    non_camel_case_types
-    )]
-
-    pub use self::Gles2 as Gl;
-
-    // gl_bindings.rs is generated in build.rs using https://crates.io/crates/gl_generator
-    include!(concat!(env!("CARGO_MANIFEST_DIR"), "/examples/gl_bindings.rs"));
-}
-
-
-mod drawer_meshpos;
-mod glutin_viewer2;
+use del_gl::gl as gl;
 
 fn main() {
-    let (mut viewer, event_loop) = glutin_viewer2::GlutinViewer2::open();
+    let (mut viewer, event_loop) = del_gl::glutin_viewer2::GlutinViewer2::open();
 
-    let mut drawer = drawer_meshpos::DrawerMeshPos::new();
+    let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
         let (mut vtx_xyz, quad_vtx) = del_msh::primitive::grid_quad2::<f32>(
             32,32);
