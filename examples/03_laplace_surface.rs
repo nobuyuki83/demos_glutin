@@ -1,7 +1,7 @@
 use del_gl::gl as gl;
 
 fn main() {
-    let (mut viewer, event_loop) = del_gl::glutin_viewer3::GlutinViewer3::open();
+    let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();
 
     let (vtx_xyz, tri_vtx) = del_msh::primitive::cylinder_closed_end_tri3(
         0.2, 1.8, 16, 32);

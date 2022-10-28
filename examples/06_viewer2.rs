@@ -1,7 +1,7 @@
 use del_gl::gl as gl;
 
 fn main() {
-    let (mut viewer, event_loop) = del_gl::glutin_viewer2::GlutinViewer2::open();
+    let (mut viewer, event_loop) = del_gl::glutin::viewer2::Viewer2::open();
 
     let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {

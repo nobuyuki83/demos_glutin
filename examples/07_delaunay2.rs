@@ -41,7 +41,7 @@ fn resampling_loops(
         }
     }
     //
-    loop_vtx_idx.resize(nloop + 1, std::usize::MAX);
+    loop_vtx_idx.resize(nloop + 1, usize::MAX);
     loop_vtx_idx[0] = 0;
     for iloop in 0..nloop {
         let nbar0 = loop_vtx_idx0[iloop + 1] - loop_vtx_idx0[iloop];
@@ -53,7 +53,7 @@ fn resampling_loops(
         loop_vtx_idx[iloop + 1] = loop_vtx_idx[iloop] + nbar1;
     }
     // adding new vertices on the outline
-    loop_vtx.resize(loop_vtx_idx[nloop], std::usize::MAX);
+    loop_vtx.resize(loop_vtx_idx[nloop], usize::MAX);
     let mut ivtx0 = 0;
     for iloop in 0..nloop {
         for iip_loop in loop_vtx_idx0[iloop]..loop_vtx_idx0[iloop + 1] {
@@ -101,7 +101,7 @@ fn main() {
             nvtx0, 0, 0.12);
     }
 
-    let (mut viewer, event_loop) = del_gl::glutin_viewer2::GlutinViewer2::open();
+    let (mut viewer, event_loop) = del_gl::glutin::viewer2::Viewer2::open();
 
     let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
