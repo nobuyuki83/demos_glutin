@@ -1,4 +1,5 @@
 use del_gl::gl as gl;
+use rand::Rng;
 
 fn main() {
     let (mut viewer, event_loop) = del_gl::glutin_viewer3::GlutinViewer3::open();
@@ -11,8 +12,15 @@ fn main() {
         println!("vertex size: {}", obj.vtx_xyz.len() / 3);
         println!("element size: {}", obj.elem_vtx_index.len() - 1);
         tri_vtx = obj.elem_vtx_xyz.iter().map(|i| *i as usize).collect();
-        obj.vtx_xyz.iter().map(|v| *v * 0.03 ).collect()
+        obj.vtx_xyz.iter().map(|v| *v * 0.03).collect()
     };
+
+    let cumulative_area_sum= del_msh::sampling::cumulative_area_sum(&vtx_xyz, &tri_vtx);
+
+    let mut rng = rand::thread_rng();
+    println!("{}", rng.gen::<f32>());
+
+    let mut points = Vec::<(usize, f32, f32)>::new();
 
     let mut drawer_mesh = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
@@ -41,8 +49,6 @@ fn main() {
     }
     let mut transform_sphere = del_misc::nalgebra::scale_rot_trans::ScaleRotTrans::new();
     transform_sphere.s = 0.03;
-    transform_sphere.translation = nalgebra::geometry::Translation3::new(
-        vtx_xyz[0], vtx_xyz[1], vtx_xyz[2]);
 
     // this clousure captures drawer, viewer and 'move' them. drawer and viewer cannot be usable anymore
     let event_handle_closure = move |event: glutin::event::Event<()>,
@@ -52,36 +58,31 @@ fn main() {
         use glutin::event_loop::ControlFlow::{Wait, ExitWithCode};
 
         if viewer.should_close { *control_flow = ExitWithCode(0); } else { *control_flow = Wait; }
-        if viewer.is_left_btn_down_not_for_view_ctrl {
-            let (ray_org, ray_dir) = viewer.nav.picking_ray(
-                viewer.ui_state.win_width, viewer.ui_state.win_height,
-                viewer.ui_state.cursor_x, viewer.ui_state.cursor_y);
-            let res = del_misc::srch_bruteforce::intersection_meshtri3(
-                &ray_org.as_slice(), &ray_dir.as_slice(), &vtx_xyz, &tri_vtx);
-            match res {
-                None => { println!("no hit!") }
-                Some(postri) => {
-                    let pos = postri.0;
-                    transform_sphere.translation = nalgebra::geometry::Translation3::new(
-                        pos[0], pos[1], pos[2]);
-                }
-            }
-            viewer.windowed_context.window().request_redraw();
-        }
         if viewer.should_draw {
             let mat_projection = viewer.nav.projection_matrix(
-                viewer.ui_state.win_width, viewer.ui_state.win_height );
+                viewer.ui_state.win_width, viewer.ui_state.win_height);
             let mat_modelview = viewer.nav.modelview_matrix();
             drawer_mesh.draw(
                 &viewer.gl,
                 mat_modelview.as_slice(), // nalgebra is column major same as OpenGL
                 mat_projection.as_slice()); // nalgebra is column major same as OpenGL
-            let mat_mvo = mat_modelview * transform_sphere.to_homogenous();
-            drawer_sphere.draw(
-                &viewer.gl,
-                mat_mvo.as_slice(), // nalgebra is column major same as OpenGL
-                mat_projection.as_slice()); // nalgebra is column major same as OpenGL
+            for pom in points.iter() {
+                let pos = del_msh::sampling::position_on_mesh_tri3(
+                    pom.0, pom.1, pom.2,
+                    &vtx_xyz, &tri_vtx);
+                transform_sphere.translation = nalgebra::geometry::Translation3::new(
+                    pos[0], pos[1], pos[2]);
+                let mat_mvo = mat_modelview * transform_sphere.to_homogenous();
+                drawer_sphere.draw(
+                    &viewer.gl,
+                    mat_mvo.as_slice(), // nalgebra is column major same as OpenGL
+                    mat_projection.as_slice()); // nalgebra is column major same as OpenGL
+            }
             viewer.windowed_context.swap_buffers().unwrap();
+            // ---
+            let out = del_msh::sampling::sample(
+                &cumulative_area_sum, rng.gen::<f32>(), rng.gen::<f32>());
+            points.push(out);
         }
     };
     event_loop.run(event_handle_closure);

@@ -7,7 +7,7 @@ fn main() {
     {
         let (mut vtx_xyz, quad_vtx) = del_msh::primitive::grid_quad2::<f32>(
             32,32);
-        vtx_xyz = del_misc::msh_misc::centerize_normalize_boundingbox(vtx_xyz, 2);
+        vtx_xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(vtx_xyz, 2);
         use crate::gl::types::GLuint;
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx_xyz, 2);

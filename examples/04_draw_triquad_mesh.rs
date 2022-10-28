@@ -13,7 +13,7 @@ fn main() {
             obj.load(filename);
             elem_vtx_xyz = obj.elem_vtx_xyz.iter().map(|i| *i as usize).collect();
             elem_vtx_xyz_index = obj.elem_vtx_index.iter().map(|i| *i as usize).collect();
-            del_misc::msh_misc::centerize_normalize_boundingbox(obj.vtx_xyz, 3)
+            del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx_xyz, 3)
         };
         println!("vertex size: {}", vtx_xyz.len() / 3);
         println!("element size: {}", elem_vtx_xyz_index.len() -1 );

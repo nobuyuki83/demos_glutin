@@ -9,9 +9,9 @@ nalgebra = "*"
 num-traits = "0.2"
 rand = "*"
 
-del-msh = {path="../del-msh"}
-# del-msh = "*"
+#del-msh = {path="../del-msh"}
+del-msh = "*"
 del-ls = "*"
 del-dtri = "*"
-del-misc = "*"
+del-misc = {path="../del-misc"}
 del-gl = {path="../del-gl"}

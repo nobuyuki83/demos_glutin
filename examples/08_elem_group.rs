@@ -33,7 +33,7 @@ fn main() {
             println!("element size: {}", num_elem);
             assert_eq!(elem_vtx_xyz_index[num_elem-1],(num_elem-1)*3);  // triangle mesh
             tri_vtx_xyz = obj.elem_vtx_xyz.iter().map(|i| *i as usize).collect();
-            vtx_xyz = del_misc::msh_misc::centerize_normalize_boundingbox(obj.vtx_xyz, 3);
+            vtx_xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx_xyz, 3);
             vtx_uv = obj.vtx_uv;
             tri_vtx_uv = obj.elem_vtx_uv.iter().map(|i| *i as usize).collect();
         };
