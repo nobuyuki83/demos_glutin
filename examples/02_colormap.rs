@@ -13,7 +13,7 @@ fn main() {
             obj.load(filename);
             println!("vertex size: {}", obj.vtx_xyz.len() / 3);
             println!("element size: {}", obj.elem_vtx_index.len() - 1);
-            tri_vtx = obj.elem_vtx_xyz.iter().map(|i| *i as usize).collect();
+            tri_vtx = obj.elem_vtx_xyz;
             vtx_xyz = obj.vtx_xyz.clone();
             for iv in 0..vtx_xyz.len() / 3 {
                 vtx_xyz[iv * 3 + 0] *= 0.03;
@@ -26,8 +26,6 @@ fn main() {
         for iv in 0..vtx_xyz.len() / 3 {
             vtx_val[iv] = ((vtx_xyz[iv * 3 + 0] * 5.).sin()+1.)*0.5;
         }
-        use crate::gl::types::GLuint;
-        let elem_vtx0: Vec<GLuint> = tri_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
         drawer.color_map = vec![
             [0.0, 0.0, 0.0], // 0
             [0.5, 0.0, 0.0], // 0.2
@@ -38,7 +36,7 @@ fn main() {
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx_xyz, 3);
         drawer.update_value(&viewer.gl, &vtx_val);
-        drawer.add_element(&viewer.gl, gl::TRIANGLES, &elem_vtx0);
+        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx);
     }
 
     // this clousure captures drawer, viewer and 'move' them. drawer and viewer cannot be usable anymore

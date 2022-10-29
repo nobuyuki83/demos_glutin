@@ -8,21 +8,18 @@ fn main() {
         let (mut vtx_xyz, quad_vtx) = del_msh::primitive::grid_quad2::<f32>(
             32,32);
         vtx_xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(vtx_xyz, 2);
-        use crate::gl::types::GLuint;
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx_xyz, 2);
         {
             let tri_vtx = del_msh::topology_uniform::tri_from_quad(&quad_vtx);
-            let elem_vtx0: Vec<GLuint> = tri_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
-            drawer.add_element(&viewer.gl, gl::TRIANGLES, &elem_vtx0, [1., 0., 0.]);
+            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx, [1., 0., 0.]);
         }
         {
             let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
                 &quad_vtx, 4,
                 &[0, 1, 1, 2, 2, 3, 3, 0],
                 vtx_xyz.len() / 2);
-            let line_vtx0: Vec<GLuint> = line_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
-            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx0, [0., 0., 0.]);
+            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
         }
     }
 

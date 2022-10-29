@@ -105,7 +105,6 @@ fn main() {
 
     let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
-        use crate::gl::types::GLuint;
         drawer.compile_shader(&viewer.gl);
         {
             let mut vtx_xyz = Vec::<f32>::new();
@@ -124,17 +123,13 @@ fn main() {
             }
             tri_vtx0
         };
-        {
-            let tri_vtx1: Vec<GLuint> = tri_vtx0.iter().map(|i| *i as gl::types::GLuint).collect();
-            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx1, [1., 0., 0.]);
-        }
+        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx0, [1., 0., 0.]);
         {
             let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
                 &tri_vtx0, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx_xy.len());
-            let line_vtx0: Vec<GLuint> = line_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
-            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx0, [0., 0., 0.]);
+            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
         }
     }
 

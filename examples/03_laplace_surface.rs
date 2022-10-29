@@ -70,7 +70,6 @@ fn main() {
 
     let mut drawer = del_gl::drawer_meshposcolor::DrawerMeshPosColor::new();
     {
-        let elem_vtx0: Vec<gl::types::GLuint> = tri_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
         drawer.color_map = vec![
             [0.0, 0.0, 0.0], // 0
             [0.5, 0.0, 0.0], // 0.2
@@ -81,7 +80,7 @@ fn main() {
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx_xyz, 3);
         drawer.update_value(&viewer.gl, &vtx_val);
-        drawer.add_element(&viewer.gl, gl::TRIANGLES, &elem_vtx0);
+        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx);
     }
 
     // this clousure captures drawer, viewer and 'move' them. drawer and viewer cannot be usable anymore

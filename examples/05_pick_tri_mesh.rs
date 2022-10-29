@@ -10,23 +10,22 @@ fn main() {
         obj.load(filename);
         println!("vertex size: {}", obj.vtx_xyz.len() / 3);
         println!("element size: {}", obj.elem_vtx_index.len() - 1);
-        tri_vtx = obj.elem_vtx_xyz.iter().map(|i| *i as usize).collect();
+        tri_vtx = obj.elem_vtx_xyz;
         obj.vtx_xyz.iter().map(|v| *v * 0.03 ).collect()
     };
 
     let mut drawer_mesh = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
-        let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
-            &tri_vtx, 3,
-            &[0, 1, 1, 2, 2, 0],
-            vtx_xyz.len() / 3);
-        use crate::gl::types::GLuint;
-        let elem_vtx0: Vec<GLuint> = tri_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
-        let mshline0: Vec<GLuint> = line_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
         drawer_mesh.compile_shader(&viewer.gl);
         drawer_mesh.update_vertex(&viewer.gl, &vtx_xyz, 3);
-        drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &elem_vtx0, [1., 1., 1.]);
-        drawer_mesh.add_element(&viewer.gl, gl::LINES, &mshline0, [0., 0., 0.]);
+        drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx, [1., 1., 1.]);
+        {
+            let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
+                &tri_vtx, 3,
+                &[0, 1, 1, 2, 2, 0],
+                vtx_xyz.len() / 3);
+            drawer_mesh.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
+        }
     }
 
     let mut drawer_sphere = del_gl::drawer_meshpos::DrawerMeshPos::new();

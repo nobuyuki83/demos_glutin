@@ -28,14 +28,13 @@ fn main() {
             let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
             let filename: &str = "asset/Babi/babi.obj";
             obj.load(filename);
-            let elem_vtx_xyz_index: Vec<usize> = obj.elem_vtx_index.iter().map(|i| *i as usize).collect();
-            let num_elem = elem_vtx_xyz_index.len() - 1;
+            let num_elem = obj.elem_vtx_index.len() - 1;
             println!("element size: {}", num_elem);
-            assert_eq!(elem_vtx_xyz_index[num_elem-1],(num_elem-1)*3);  // triangle mesh
-            tri_vtx_xyz = obj.elem_vtx_xyz.iter().map(|i| *i as usize).collect();
+            assert_eq!(obj.elem_vtx_index[num_elem-1],(num_elem-1)*3);  // triangle mesh
+            tri_vtx_xyz = obj.elem_vtx_xyz;
             vtx_xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx_xyz, 3);
             vtx_uv = obj.vtx_uv;
-            tri_vtx_uv = obj.elem_vtx_uv.iter().map(|i| *i as usize).collect();
+            tri_vtx_uv = obj.elem_vtx_uv;
         };
         println!("vertex size: {}", vtx_xyz.len() / 3);
         println!("uv size: {}", vtx_uv.len() / 2);
@@ -48,7 +47,6 @@ fn main() {
             (num_group, elem_group)
         };
         println!("num_group: {}",num_group);
-        use crate::gl::types::GLuint;
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx_xyz, 3);
         for i_group in 0..num_group {
@@ -60,19 +58,17 @@ fn main() {
                     tri_vtx0.push(tri_vtx_xyz[i_elem*3+2]);
                 }
             }
-            let tri_vtx1: Vec<GLuint> = tri_vtx0.iter().map(|i| *i as gl::types::GLuint).collect();
             let r = (i_group % 3 + 1) as f32 / 3 as f32;
             let g = (i_group % 4 + 1) as f32 / 4 as f32;
             let b = (i_group % 5 + 1) as f32 / 5 as f32;
-            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx1, [r, g, b]);
+            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx0, [r, g, b]);
         }
         {
             let line_vtx_xyz: Vec<usize> = del_msh::topology_uniform::mshline(
                 &tri_vtx_xyz, 3,
                 &[0,1,1,2,2,0],
                 vtx_xyz.len() / 3);
-            let line_vtx_xyz0: Vec<GLuint> = line_vtx_xyz.iter().map(|i| *i as gl::types::GLuint).collect();
-            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx_xyz0, [0., 0., 0.]);
+            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx_xyz, [0., 0., 0.]);
         }
     }
 

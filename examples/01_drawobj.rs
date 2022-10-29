@@ -12,7 +12,7 @@ fn main() {
             obj.load(filename);
             println!("vertex size: {}", obj.vtx_xyz.len() / 3);
             println!("element size: {}", obj.elem_vtx_index.len() - 1);
-            tri_vtx = obj.elem_vtx_xyz.iter().map(|i| *i as usize).collect();
+            tri_vtx = obj.elem_vtx_xyz;
             let mut vtx_xyz0 = obj.vtx_xyz.clone();
             for iv in 0..vtx_xyz0.len() / 3 {
                 vtx_xyz0[iv * 3 + 0] *= 0.03;
@@ -21,17 +21,16 @@ fn main() {
             }
             vtx_xyz0
         };
-        let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
-            &tri_vtx, 3,
-            &[0, 1, 1, 2, 2, 0],
-            vtx_xyz.len() / 3);
-        use crate::gl::types::GLuint;
-        let elem_vtx0: Vec<GLuint> = tri_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
-        let mshline0: Vec<GLuint> = line_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx_xyz, 3);
-        drawer.add_element(&viewer.gl, gl::TRIANGLES, &elem_vtx0, [1., 0., 0.]);
-        drawer.add_element(&viewer.gl, gl::LINES, &mshline0, [0., 0., 0.]);
+        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx, [1., 0., 0.]);
+        {
+            let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
+                &tri_vtx, 3,
+                &[0, 1, 1, 2, 2, 0],
+                vtx_xyz.len() / 3);
+            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
+        }
     }
 
     // this clousure captures drawer, viewer and 'move' them. drawer and viewer cannot be usable anymore

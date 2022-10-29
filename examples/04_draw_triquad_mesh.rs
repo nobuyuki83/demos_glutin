@@ -5,33 +5,31 @@ fn main() {
 
     let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
-        let elem_vtx_xyz_index: Vec<usize>;
+        let elem_vtx_index: Vec<usize>;
         let elem_vtx_xyz: Vec<usize>;
         let vtx_xyz: Vec<f32> = {
             let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
             let filename: &str = "asset/HorseSwap.obj";
             obj.load(filename);
-            elem_vtx_xyz = obj.elem_vtx_xyz.iter().map(|i| *i as usize).collect();
-            elem_vtx_xyz_index = obj.elem_vtx_index.iter().map(|i| *i as usize).collect();
+            elem_vtx_xyz = obj.elem_vtx_xyz;
+            elem_vtx_index = obj.elem_vtx_index;
             del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx_xyz, 3)
         };
         println!("vertex size: {}", vtx_xyz.len() / 3);
-        println!("element size: {}", elem_vtx_xyz_index.len() -1 );
-
-        let tri_vtx = del_msh::topology_mix::meshtri_from_meshtriquad(
-            &elem_vtx_xyz_index, &elem_vtx_xyz);
-
-        let line_vtx: Vec<usize> = del_msh::topology_mix::meshline_from_meshtriquad(
-            &elem_vtx_xyz_index, &elem_vtx_xyz,
-            vtx_xyz.len() / 3);
-
-        use crate::gl::types::GLuint;
-        let tri_vtx0: Vec<GLuint> = tri_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
-        let line_vtx0: Vec<GLuint> = line_vtx.iter().map(|i| *i as gl::types::GLuint).collect();
+        println!("element size: {}", elem_vtx_index.len() -1 );
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx_xyz, 3);
-        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx0, [1., 0., 0.]);
-        drawer.add_element(&viewer.gl, gl::LINES, &line_vtx0, [0., 0., 0.]);
+        {
+            let tri_vtx = del_msh::topology_mix::meshtri_from_meshtriquad(
+                &elem_vtx_index, &elem_vtx_xyz);
+            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx, [1., 0., 0.]);
+        }
+        {
+            let line_vtx: Vec<usize> = del_msh::topology_mix::meshline_from_meshtriquad(
+                &elem_vtx_index, &elem_vtx_xyz,
+                vtx_xyz.len() / 3);
+            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
+        }
     }
 
     // this clousure captures drawer, viewer and 'move' them. drawer and viewer cannot be usable anymore
