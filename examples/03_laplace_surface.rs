@@ -29,7 +29,7 @@ fn main() {
         let p0 = &vtx_xyz[(i0 * 3 + 0)..(i0 * 3 + 3)];
         let p1 = &vtx_xyz[(i1 * 3 + 0)..(i1 * 3 + 3)];
         let p2 = &vtx_xyz[(i2 * 3 + 0)..(i2 * 3 + 3)];
-        let cots = del_geo::geo_tri::cot3(p0, p1, p2);
+        let cots = del_geo::tri::cot3(p0, p1, p2);
         let emat: [f32; 9] = [
             cots[1] + cots[2], -cots[2], -cots[1],
             -cots[2], cots[2] + cots[0], -cots[0],

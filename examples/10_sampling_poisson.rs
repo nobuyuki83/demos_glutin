@@ -13,33 +13,33 @@ fn main() {
         obj.vtx_xyz.iter().map(|v| *v * 0.03).collect()
     };
 
-    let points = {
+    let samples = {
         let tri_adjtri = del_msh::topology_uniform::elsuel2(
             &tri_vtx, 3,
             &[0,2,4,6], &[1,2,2,0,0,1],
             vtx_xyz.len() / 3);
         let cumulative_area_sum = del_msh::sampling::cumulative_area_sum(&vtx_xyz, &tri_vtx);
-        let mut el_smpl = std::collections::HashMap::<usize, Vec<usize>>::new();
+        let mut tri_smpl = std::collections::HashMap::<usize, Vec<usize>>::new();
         let rad = 0.1_f32;
         let mut rng = rand::thread_rng();
-        let mut points = Vec::<(usize, f32, f32)>::new();
+        let mut samples = Vec::<(usize, f32, f32)>::new();
         for _itr in 0..1000 {
-            let smpli = del_msh::sampling::sample_uniform(
+            let sample_i = del_msh::sampling::sample_uniform(
                 &cumulative_area_sum, rng.gen::<f32>(), rng.gen::<f32>());
             let is_near = del_misc::srch_bruteforce::is_there_point_on_mesh_inside_sphere(
-                &smpli, rad, &points, &el_smpl,
+                &sample_i, rad, &samples, &tri_smpl,
                 &vtx_xyz, &tri_vtx, &tri_adjtri);
             if !is_near {
-                match el_smpl.get_mut(&smpli.0) {
-                    Some(v) => { v.push(points.len()); },
-                    None => { el_smpl.insert(smpli.0, vec!(points.len())); }
+                match tri_smpl.get_mut(&sample_i.0) {
+                    Some(v) => { v.push(samples.len()); },
+                    None => { tri_smpl.insert(sample_i.0, vec!(samples.len())); }
                 }
-                points.push(smpli);
+                samples.push(sample_i);
             }
         }
-        points
+        samples
     };
-    println!("{}", points.len());
+    println!("{}", samples.len());
 
     let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();
     let mut drawer_mesh = del_gl::drawer_meshpos::DrawerMeshPos::new();
@@ -83,7 +83,7 @@ fn main() {
                 &viewer.gl,
                 mat_modelview.as_slice(), // nalgebra is column major same as OpenGL
                 mat_projection.as_slice()); // nalgebra is column major same as OpenGL
-            for pom in points.iter() {
+            for pom in samples.iter() {
                 let pos = del_msh::sampling::position_on_mesh_tri3(
                     pom.0, pom.1, pom.2,
                     &vtx_xyz, &tri_vtx);
