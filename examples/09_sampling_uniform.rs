@@ -15,12 +15,17 @@ fn main() {
         obj.vtx_xyz.iter().map(|v| *v * 0.03).collect()
     };
 
-    let cumulative_area_sum= del_msh::sampling::cumulative_area_sum(&vtx_xyz, &tri_vtx);
-
-    let mut rng = rand::thread_rng();
-    println!("{}", rng.gen::<f32>());
-
-    let mut points = Vec::<(usize, f32, f32)>::new();
+    let points = {
+        let cumulative_area_sum= del_msh::sampling::cumulative_area_sum(&vtx_xyz, &tri_vtx);
+        let mut rng = rand::thread_rng();
+        let mut points = Vec::<(usize, f32, f32)>::new();
+        for _itr in 0..1000 {
+            let out = del_msh::sampling::sample_uniform(
+                &cumulative_area_sum, rng.gen::<f32>(), rng.gen::<f32>());
+            points.push(out);
+        }
+        points
+    };
 
     let mut drawer_mesh = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
@@ -39,13 +44,13 @@ fn main() {
     let mut drawer_sphere = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
         let sphere_meshtri3 = del_msh::primitive::sphere_tri3::<f32>(
-            1., 32, 32);
+            1., 8, 16);
         drawer_sphere.compile_shader(&viewer.gl);
         drawer_sphere.update_vertex(&viewer.gl, &(sphere_meshtri3.0), 3);
         drawer_sphere.add_element(&viewer.gl, gl::TRIANGLES, &sphere_meshtri3.1, [1., 0., 0.]);
     }
     let mut transform_sphere = del_misc::nalgebra::scale_rot_trans::ScaleRotTrans::new();
-    transform_sphere.s = 0.03;
+    transform_sphere.s = 0.01;
 
     // this clousure captures drawer, viewer and 'move' them. drawer and viewer cannot be usable anymore
     let event_handle_closure = move |event: glutin::event::Event<()>,
@@ -76,10 +81,6 @@ fn main() {
                     mat_projection.as_slice()); // nalgebra is column major same as OpenGL
             }
             viewer.windowed_context.swap_buffers().unwrap();
-            // ---
-            let out = del_msh::sampling::sample(
-                &cumulative_area_sum, rng.gen::<f32>(), rng.gen::<f32>());
-            points.push(out);
         }
     };
     event_loop.run(event_handle_closure);

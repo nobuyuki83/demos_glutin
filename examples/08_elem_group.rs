@@ -43,7 +43,8 @@ fn main() {
                 &tri_vtx_uv, 3,
                 &[0,2,4,6], &[1,2,2,0,0,1],
                 vtx_uv.len() / 2);
-            let (num_group, elem_group) = del_msh::group::make_group_elem(&tri_vtx_uv, 3, &elsuel);
+            let (num_group, elem_group) = del_msh::group::make_group_elem(
+                &tri_vtx_uv, 3, &elsuel);
             (num_group, elem_group)
         };
         println!("num_group: {}",num_group);

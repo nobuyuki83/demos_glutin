@@ -7,19 +7,14 @@ fn main() {
     {
         let filename: &str = "asset/bunny_1k.obj";
         let tri_vtx: Vec<usize>;
-        let mut vtx_xyz: Vec<f32>;
+        let vtx_xyz: Vec<f32>;
         {
             let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
             obj.load(filename);
             println!("vertex size: {}", obj.vtx_xyz.len() / 3);
             println!("element size: {}", obj.elem_vtx_index.len() - 1);
             tri_vtx = obj.elem_vtx_xyz;
-            vtx_xyz = obj.vtx_xyz.clone();
-            for iv in 0..vtx_xyz.len() / 3 {
-                vtx_xyz[iv * 3 + 0] *= 0.03;
-                vtx_xyz[iv * 3 + 1] *= 0.03;
-                vtx_xyz[iv * 3 + 2] *= 0.03;
-            }
+            vtx_xyz = obj.vtx_xyz.iter().map(|v| *v * 0.03 ).collect();
         }
         let mut vtx_val = Vec::<f32>::new();
         vtx_val.resize(vtx_xyz.len() / 3, 0.);
