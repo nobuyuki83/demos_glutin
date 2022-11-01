@@ -5,21 +5,21 @@ fn main() {
 
     let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
-        let (mut vtx_xyz, quad_vtx) = del_msh::primitive::grid_quad2::<f32>(
+        let (mut vtx2xyz, quad2vtx) = del_msh::primitive::grid_quad2::<f32>(
             32,32);
-        vtx_xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(vtx_xyz, 2);
+        vtx2xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(vtx2xyz, 2);
         drawer.compile_shader(&viewer.gl);
-        drawer.update_vertex(&viewer.gl, &vtx_xyz, 2);
+        drawer.update_vertex(&viewer.gl, &vtx2xyz, 2);
         {
-            let tri_vtx = del_msh::topology_uniform::tri_from_quad(&quad_vtx);
-            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx, [1., 0., 0.]);
+            let tri2vtx = del_msh::topology_uniform::tri_from_quad(&quad2vtx);
+            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
         }
         {
-            let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
-                &quad_vtx, 4,
+            let line2vtx: Vec<usize> = del_msh::topology_uniform::mshline(
+                &quad2vtx, 4,
                 &[0, 1, 1, 2, 2, 3, 3, 0],
-                vtx_xyz.len() / 2);
-            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
+                vtx2xyz.len() / 2);
+            drawer.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
         }
     }
 

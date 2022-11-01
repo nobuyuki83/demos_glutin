@@ -2,24 +2,25 @@ use del_gl::gl as gl;
 use rand::Rng;
 
 fn main() {
-    let tri_vtx: Vec<usize>;
-    let vtx_xyz: Vec<f32> = {
+    let tri2vtx: Vec<usize>;
+    let vtx2xyz: Vec<f32>;
+    {
         let filename: &str = "asset/bunny_1k.obj";
         let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
         obj.load(filename);
-        println!("vertex size: {}", obj.vtx_xyz.len() / 3);
-        println!("element size: {}", obj.elem_vtx_index.len() - 1);
-        tri_vtx = obj.elem_vtx_xyz;
-        obj.vtx_xyz.iter().map(|v| *v * 0.03).collect()
+        println!("vertex size: {}", obj.vtx2xyz.len() / 3);
+        println!("element size: {}", obj.elem2vtx_idx.len() - 1);
+        tri2vtx = obj.elem2vtx_xyz;
+        vtx2xyz = obj.vtx2xyz.iter().map(|v| *v * 0.03).collect();
     };
 
     let samples = {
-        let tri_adjtri = del_msh::topology_uniform::elsuel2(
-            &tri_vtx, 3,
+        let tri2adjtri = del_msh::topology_uniform::elsuel2(
+            &tri2vtx, 3,
             &[0,2,4,6], &[1,2,2,0,0,1],
-            vtx_xyz.len() / 3);
-        let cumulative_area_sum = del_msh::sampling::cumulative_area_sum(&vtx_xyz, &tri_vtx);
-        let mut tri_smpl = std::collections::HashMap::<usize, Vec<usize>>::new();
+            vtx2xyz.len() / 3);
+        let cumulative_area_sum = del_msh::sampling::cumulative_area_sum(&vtx2xyz, &tri2vtx);
+        let mut tri2smpl = std::collections::HashMap::<usize, Vec<usize>>::new();
         let rad = 0.1_f32;
         let mut rng = rand::thread_rng();
         let mut samples = Vec::<(usize, f32, f32)>::new();
@@ -27,12 +28,12 @@ fn main() {
             let sample_i = del_msh::sampling::sample_uniform(
                 &cumulative_area_sum, rng.gen::<f32>(), rng.gen::<f32>());
             let is_near = del_misc::srch_bruteforce::is_there_point_on_mesh_inside_sphere(
-                &sample_i, rad, &samples, &tri_smpl,
-                &vtx_xyz, &tri_vtx, &tri_adjtri);
+                &sample_i, rad, &samples, &tri2smpl,
+                &vtx2xyz, &tri2vtx, &tri2adjtri);
             if !is_near {
-                match tri_smpl.get_mut(&sample_i.0) {
+                match tri2smpl.get_mut(&sample_i.0) {
                     Some(v) => { v.push(samples.len()); },
-                    None => { tri_smpl.insert(sample_i.0, vec!(samples.len())); }
+                    None => { tri2smpl.insert(sample_i.0, vec!(samples.len())); }
                 }
                 samples.push(sample_i);
             }
@@ -45,13 +46,13 @@ fn main() {
     let mut drawer_mesh = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
         drawer_mesh.compile_shader(&viewer.gl);
-        drawer_mesh.update_vertex(&viewer.gl, &vtx_xyz, 3);
-        drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx, [1., 1., 1.]);
+        drawer_mesh.update_vertex(&viewer.gl, &vtx2xyz, 3);
+        drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 1., 1.]);
         {
             let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
-                &tri_vtx, 3,
+                &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
-                vtx_xyz.len() / 3);
+                vtx2xyz.len() / 3);
             drawer_mesh.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
         }
     }
@@ -86,7 +87,7 @@ fn main() {
             for pom in samples.iter() {
                 let pos = del_msh::sampling::position_on_mesh_tri3(
                     pom.0, pom.1, pom.2,
-                    &vtx_xyz, &tri_vtx);
+                    &vtx2xyz, &tri2vtx);
                 transform_sphere.translation = nalgebra::geometry::Translation3::new(
                     pos[0], pos[1], pos[2]);
                 let mat_mvo = mat_modelview * transform_sphere.to_homogenous();

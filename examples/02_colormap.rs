@@ -6,20 +6,20 @@ fn main() {
     let mut drawer = del_gl::drawer_meshposcolor::DrawerMeshPosColor::new();
     {
         let filename: &str = "asset/bunny_1k.obj";
-        let tri_vtx: Vec<usize>;
-        let vtx_xyz: Vec<f32>;
+        let tri2vtx: Vec<usize>;
+        let vtx2xyz: Vec<f32>;
         {
             let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
             obj.load(filename);
-            println!("vertex size: {}", obj.vtx_xyz.len() / 3);
-            println!("element size: {}", obj.elem_vtx_index.len() - 1);
-            tri_vtx = obj.elem_vtx_xyz;
-            vtx_xyz = obj.vtx_xyz.iter().map(|v| *v * 0.03 ).collect();
+            println!("vertex size: {}", obj.vtx2xyz.len() / 3);
+            println!("element size: {}", obj.elem2vtx_idx.len() - 1);
+            tri2vtx = obj.elem2vtx_xyz;
+            vtx2xyz = obj.vtx2xyz.iter().map(|v| *v * 0.03 ).collect();
         }
-        let mut vtx_val = Vec::<f32>::new();
-        vtx_val.resize(vtx_xyz.len() / 3, 0.);
-        for iv in 0..vtx_xyz.len() / 3 {
-            vtx_val[iv] = ((vtx_xyz[iv * 3 + 0] * 5.).sin()+1.)*0.5;
+        let mut vtx2val = Vec::<f32>::new();
+        vtx2val.resize(vtx2xyz.len() / 3, 0.);
+        for iv in 0..vtx2xyz.len() / 3 {
+            vtx2val[iv] = ((vtx2xyz[iv * 3 + 0] * 5.).sin()+1.)*0.5;
         }
         drawer.color_map = vec![
             [0.0, 0.0, 0.0], // 0
@@ -29,9 +29,9 @@ fn main() {
             [1.0, 1.0, 0.0], // 0.8
             [1.0, 1.0, 1.0]]; // 1.0
         drawer.compile_shader(&viewer.gl);
-        drawer.update_vertex(&viewer.gl, &vtx_xyz, 3);
-        drawer.update_value(&viewer.gl, &vtx_val);
-        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx);
+        drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
+        drawer.update_value(&viewer.gl, &vtx2val);
+        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx);
     }
 
     // this clousure captures drawer, viewer and 'move' them. drawer and viewer cannot be usable anymore

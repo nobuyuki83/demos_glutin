@@ -20,43 +20,43 @@ fn main() {
 
     let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
-        let tri_vtx_xyz: Vec<usize>;
-        let vtx_xyz: Vec<f32>;
-        let tri_vtx_uv: Vec<usize>;
-        let vtx_uv: Vec<f32>;
+        let tri2vtx_xyz: Vec<usize>;
+        let vtx2xyz: Vec<f32>;
+        let tri2vtx_uv: Vec<usize>;
+        let vtx2uv: Vec<f32>;
         {
             let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
             let filename: &str = "asset/Babi/babi.obj";
             obj.load(filename);
-            let num_elem = obj.elem_vtx_index.len() - 1;
+            let num_elem = obj.elem2vtx_idx.len() - 1;
             println!("element size: {}", num_elem);
-            assert_eq!(obj.elem_vtx_index[num_elem-1],(num_elem-1)*3);  // triangle mesh
-            tri_vtx_xyz = obj.elem_vtx_xyz;
-            vtx_xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx_xyz, 3);
-            vtx_uv = obj.vtx_uv;
-            tri_vtx_uv = obj.elem_vtx_uv;
+            assert_eq!(obj.elem2vtx_idx[num_elem-1], (num_elem-1)*3);  // triangle mesh
+            tri2vtx_xyz = obj.elem2vtx_xyz;
+            vtx2xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx2xyz, 3);
+            vtx2uv = obj.vtx2uv;
+            tri2vtx_uv = obj.elem2vtx_uv;
         };
-        println!("vertex size: {}", vtx_xyz.len() / 3);
-        println!("uv size: {}", vtx_uv.len() / 2);
+        println!("vertex size: {}", vtx2xyz.len() / 3);
+        println!("uv size: {}", vtx2uv.len() / 2);
         let (num_group, elem_group) = {
             let elsuel = del_msh::topology_uniform::elsuel2(
-                &tri_vtx_uv, 3,
+                &tri2vtx_uv, 3,
                 &[0,2,4,6], &[1,2,2,0,0,1],
-                vtx_uv.len() / 2);
-            let (num_group, elem_group) = del_msh::group::make_group_elem(
-                &tri_vtx_uv, 3, &elsuel);
-            (num_group, elem_group)
+                vtx2uv.len() / 2);
+            let (num_group, elem2group) = del_msh::group::make_group_elem(
+                &tri2vtx_uv, 3, &elsuel);
+            (num_group, elem2group)
         };
         println!("num_group: {}",num_group);
         drawer.compile_shader(&viewer.gl);
-        drawer.update_vertex(&viewer.gl, &vtx_xyz, 3);
+        drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
         for i_group in 0..num_group {
             let mut tri_vtx0 = Vec::<usize>::new();
             for i_elem in 0..elem_group.len() {
                 if elem_group[i_elem] == i_group {
-                    tri_vtx0.push(tri_vtx_xyz[i_elem*3+0]);
-                    tri_vtx0.push(tri_vtx_xyz[i_elem*3+1]);
-                    tri_vtx0.push(tri_vtx_xyz[i_elem*3+2]);
+                    tri_vtx0.push(tri2vtx_xyz[i_elem*3+0]);
+                    tri_vtx0.push(tri2vtx_xyz[i_elem*3+1]);
+                    tri_vtx0.push(tri2vtx_xyz[i_elem*3+2]);
                 }
             }
             let r = (i_group % 3 + 1) as f32 / 3 as f32;
@@ -66,9 +66,9 @@ fn main() {
         }
         {
             let line_vtx_xyz: Vec<usize> = del_msh::topology_uniform::mshline(
-                &tri_vtx_xyz, 3,
+                &tri2vtx_xyz, 3,
                 &[0,1,1,2,2,0],
-                vtx_xyz.len() / 3);
+                vtx2xyz.len() / 3);
             drawer.add_element(&viewer.gl, gl::LINES, &line_vtx_xyz, [0., 0., 0.]);
         }
     }

@@ -6,7 +6,7 @@ use glutin::ContextBuilder;
 use del_gl::gl as gl;
 
 fn main() {
-    let vtx_xyzrgb: Vec<f32> = vec![
+    let vtx2xyzrgb: Vec<f32> = vec![
         -0.5, -0.5, 1.0, 0.0, 0.0,
         0.0, 0.5, 0.0, 1.0, 0.0,
         0.5, -0.5, 0.0, 0.0, 1.0];
@@ -29,7 +29,7 @@ fn main() {
     drawer.compile_shader(&gl);
     drawer.initialize(
         &gl,
-        &vtx_xyzrgb);
+        &vtx2xyzrgb);
 
     el.run(move |event, _, control_flow| {
         // println!("{:?}", event);

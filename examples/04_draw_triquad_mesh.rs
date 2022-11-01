@@ -5,30 +5,30 @@ fn main() {
 
     let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
-        let elem_vtx_index: Vec<usize>;
-        let elem_vtx_xyz: Vec<usize>;
-        let vtx_xyz: Vec<f32> = {
+        let elem2vtx_idx: Vec<usize>;
+        let elem2vtx_xyz: Vec<usize>;
+        let vtx2xyz: Vec<f32> = {
             let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
             let filename: &str = "asset/HorseSwap.obj";
             obj.load(filename);
-            elem_vtx_xyz = obj.elem_vtx_xyz;
-            elem_vtx_index = obj.elem_vtx_index;
-            del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx_xyz, 3)
+            elem2vtx_xyz = obj.elem2vtx_xyz;
+            elem2vtx_idx = obj.elem2vtx_idx;
+            del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx2xyz, 3)
         };
-        println!("vertex size: {}", vtx_xyz.len() / 3);
-        println!("element size: {}", elem_vtx_index.len() -1 );
+        println!("vertex size: {}", vtx2xyz.len() / 3);
+        println!("element size: {}", elem2vtx_idx.len() -1 );
         drawer.compile_shader(&viewer.gl);
-        drawer.update_vertex(&viewer.gl, &vtx_xyz, 3);
+        drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
         {
-            let tri_vtx = del_msh::topology_mix::meshtri_from_meshtriquad(
-                &elem_vtx_index, &elem_vtx_xyz);
-            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx, [1., 0., 0.]);
+            let tri2vtx = del_msh::topology_mix::meshtri_from_meshtriquad(
+                &elem2vtx_idx, &elem2vtx_xyz);
+            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
         }
         {
-            let line_vtx: Vec<usize> = del_msh::topology_mix::meshline_from_meshtriquad(
-                &elem_vtx_index, &elem_vtx_xyz,
-                vtx_xyz.len() / 3);
-            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
+            let line2vtx: Vec<usize> = del_msh::topology_mix::meshline_from_meshtriquad(
+                &elem2vtx_idx, &elem2vtx_xyz,
+                vtx2xyz.len() / 3);
+            drawer.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
         }
     }
 

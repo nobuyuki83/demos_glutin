@@ -3,27 +3,28 @@ use del_gl::gl as gl;
 fn main() {
     let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();
 
-    let tri_vtx: Vec<usize>;
-    let vtx_xyz: Vec<f32> = {
+    let tri2vtx: Vec<usize>;
+    let vtx2xyz: Vec<f32>;
+    {
         let filename: &str = "asset/bunny_1k.obj";
         let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
         obj.load(filename);
-        println!("vertex size: {}", obj.vtx_xyz.len() / 3);
-        println!("element size: {}", obj.elem_vtx_index.len() - 1);
-        tri_vtx = obj.elem_vtx_xyz;
-        obj.vtx_xyz.iter().map(|v| *v * 0.03 ).collect()
+        println!("vertex size: {}", obj.vtx2xyz.len() / 3);
+        println!("element size: {}", obj.elem2vtx_idx.len() - 1);
+        tri2vtx = obj.elem2vtx_xyz;
+        vtx2xyz = obj.vtx2xyz.iter().map(|v| *v * 0.03 ).collect();
     };
 
     let mut drawer_mesh = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
         drawer_mesh.compile_shader(&viewer.gl);
-        drawer_mesh.update_vertex(&viewer.gl, &vtx_xyz, 3);
-        drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx, [1., 1., 1.]);
+        drawer_mesh.update_vertex(&viewer.gl, &vtx2xyz, 3);
+        drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 1., 1.]);
         {
             let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
-                &tri_vtx, 3,
+                &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
-                vtx_xyz.len() / 3);
+                vtx2xyz.len() / 3);
             drawer_mesh.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
         }
     }
@@ -41,7 +42,7 @@ fn main() {
     let mut transform_sphere = del_misc::nalgebra::scale_rot_trans::ScaleRotTrans::new();
     transform_sphere.s = 0.03;
     transform_sphere.translation = nalgebra::geometry::Translation3::new(
-        vtx_xyz[0], vtx_xyz[1], vtx_xyz[2]);
+        vtx2xyz[0], vtx2xyz[1], vtx2xyz[2]);
 
     // this clousure captures drawer, viewer and 'move' them. drawer and viewer cannot be usable anymore
     let event_handle_closure = move |event: glutin::event::Event<()>,
@@ -56,7 +57,7 @@ fn main() {
                 viewer.ui_state.win_width, viewer.ui_state.win_height,
                 viewer.ui_state.cursor_x, viewer.ui_state.cursor_y);
             let res = del_misc::srch_bruteforce::intersection_meshtri3(
-                &ray_org.as_slice(), &ray_dir.as_slice(), &vtx_xyz, &tri_vtx);
+                &ray_org.as_slice(), &ray_dir.as_slice(), &vtx2xyz, &tri2vtx);
             match res {
                 None => { println!("no hit!") }
                 Some(postri) => {

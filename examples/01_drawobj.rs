@@ -6,30 +6,25 @@ fn main() {
     let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
     {
         let filename: &str = "asset/bunny_1k.obj";
-        let tri_vtx: Vec<usize>;
-        let vtx_xyz: Vec<f32> = {
+        let tri2vtx: Vec<usize>;
+        let vtx2xyz: Vec<f32>;
+        {
             let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
             obj.load(filename);
-            println!("vertex size: {}", obj.vtx_xyz.len() / 3);
-            println!("element size: {}", obj.elem_vtx_index.len() - 1);
-            tri_vtx = obj.elem_vtx_xyz;
-            let mut vtx_xyz0 = obj.vtx_xyz.clone();
-            for iv in 0..vtx_xyz0.len() / 3 {
-                vtx_xyz0[iv * 3 + 0] *= 0.03;
-                vtx_xyz0[iv * 3 + 1] *= 0.03;
-                vtx_xyz0[iv * 3 + 2] *= 0.03;
-            }
-            vtx_xyz0
+            println!("vertex size: {}", obj.vtx2xyz.len() / 3);
+            println!("element size: {}", obj.elem2vtx_idx.len() - 1);
+            tri2vtx = obj.elem2vtx_xyz;
+            vtx2xyz = obj.vtx2xyz.iter().map(|v| v*0.03).collect();
         };
         drawer.compile_shader(&viewer.gl);
-        drawer.update_vertex(&viewer.gl, &vtx_xyz, 3);
-        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx, [1., 0., 0.]);
+        drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
+        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
         {
-            let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
-                &tri_vtx, 3,
+            let line2vtx: Vec<usize> = del_msh::topology_uniform::mshline(
+                &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
-                vtx_xyz.len() / 3);
-            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
+                vtx2xyz.len() / 3);
+            drawer.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
         }
     }
 

@@ -11,7 +11,8 @@ rand = "*"
 
 del-msh = {path="../del-msh"}
 #del-msh = "*"
-del-ls = "*"
+del-ls = {path="../del-ls"}
+#del-ls = "*"
 del-dtri = "*"
 del-misc = {path="../del-misc"}
 del-gl = {path="../del-gl"}
