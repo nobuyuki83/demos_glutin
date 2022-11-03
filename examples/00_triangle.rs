@@ -25,7 +25,7 @@ fn main() {
 
     println!("OpenGL version {}", version);
 
-    let mut drawer = del_gl::drawer_arrayposcolor::DrawerArrayPosColor { program: 0, mode: gl::TRIANGLES };
+    let mut drawer = del_gl::array_vtxcolor::Drawer { program: 0, mode: gl::TRIANGLES };
     drawer.compile_shader(&gl);
     drawer.initialize(
         &gl,

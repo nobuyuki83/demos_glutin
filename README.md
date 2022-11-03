@@ -30,3 +30,9 @@
 
 ### 09: Generating points randomly on a triangle mesh
 ![demo09](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo09.png)
+
+### 10: Poisson disk sampling on a triangle mesh
+![demo10](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo10.png)
+
+### 11: Heat distance on a triangle mesh
+![demo11](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo11.png)

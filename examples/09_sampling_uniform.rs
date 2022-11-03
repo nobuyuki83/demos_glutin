@@ -4,17 +4,8 @@ use rand::Rng;
 fn main() {
     let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();
 
-    let tri2vtx: Vec<usize>;
-    let vtx2xyz: Vec<f32>;
-    {
-        let filename: &str = "asset/bunny_1k.obj";
-        let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
-        obj.load(filename);
-        println!("vertex size: {}", obj.vtx2xyz.len() / 3);
-        println!("element size: {}", obj.elem2vtx_idx.len() - 1);
-        tri2vtx = obj.elem2vtx_xyz;
-        vtx2xyz = obj.vtx2xyz.iter().map(|v| *v * 0.03).collect();
-    }
+    let (tri2vtx, vtx2xyz) = del_msh::io_obj::load_tri_mesh(
+        "asset/bunny_1k.obj", Some(1.5));
 
     let points = {
         let cumulative_area_sum= del_msh::sampling::cumulative_area_sum(&vtx2xyz, &tri2vtx);
@@ -28,7 +19,7 @@ fn main() {
         points
     };
 
-    let mut drawer_mesh = del_gl::drawer_meshpos::DrawerMeshPos::new();
+    let mut drawer_mesh = del_gl::mesh::Drawer::new();
     {
         drawer_mesh.compile_shader(&viewer.gl);
         drawer_mesh.update_vertex(&viewer.gl, &vtx2xyz, 3);
@@ -42,7 +33,7 @@ fn main() {
         }
     }
 
-    let mut drawer_sphere = del_gl::drawer_meshpos::DrawerMeshPos::new();
+    let mut drawer_sphere = del_gl::mesh::Drawer::new();
     {
         let sphere_meshtri3 = del_msh::primitive::sphere_tri3::<f32>(
             1., 8, 16);

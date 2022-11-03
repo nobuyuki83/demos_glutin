@@ -103,7 +103,7 @@ fn main() {
 
     let (mut viewer, event_loop) = del_gl::glutin::viewer2::Viewer2::open();
 
-    let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
+    let mut drawer = del_gl::mesh::Drawer::new();
     {
         drawer.compile_shader(&viewer.gl);
         {

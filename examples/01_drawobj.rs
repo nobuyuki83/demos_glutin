@@ -3,19 +3,10 @@ use del_gl::gl as gl;
 fn main() {
     let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();
 
-    let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
+    let mut drawer = del_gl::mesh::Drawer::new();
     {
-        let filename: &str = "asset/bunny_1k.obj";
-        let tri2vtx: Vec<usize>;
-        let vtx2xyz: Vec<f32>;
-        {
-            let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
-            obj.load(filename);
-            println!("vertex size: {}", obj.vtx2xyz.len() / 3);
-            println!("element size: {}", obj.elem2vtx_idx.len() - 1);
-            tri2vtx = obj.elem2vtx_xyz;
-            vtx2xyz = obj.vtx2xyz.iter().map(|v| v*0.03).collect();
-        };
+        let (tri2vtx, vtx2xyz) = del_msh::io_obj::load_tri_mesh(
+            "asset/bunny_11k.obj", Some(1.5));
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
         drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);

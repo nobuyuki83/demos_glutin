@@ -53,7 +53,7 @@ fn main() {
     let vtx_val = ls.u_vec.clone();
 
     let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();
-    let mut drawer = del_gl::drawer_meshposcolor::DrawerMeshPosColor::new();
+    let mut drawer = del_gl::mesh_colormap::Drawer::new();
     {
         drawer.color_map = vec![
             [0.0, 0.0, 0.0], // 0

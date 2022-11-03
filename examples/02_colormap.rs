@@ -3,7 +3,7 @@ use del_gl::gl as gl;
 fn main() {
     let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();
 
-    let mut drawer = del_gl::drawer_meshposcolor::DrawerMeshPosColor::new();
+    let mut drawer = del_gl::mesh_colormap::Drawer::new();
     {
         let filename: &str = "asset/bunny_1k.obj";
         let tri2vtx: Vec<usize>;

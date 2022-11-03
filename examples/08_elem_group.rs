@@ -1,24 +1,9 @@
 use del_gl::gl as gl;
 
-
-/*
-            for iel in 0..tri_vtx_uv.len() / 3 {
-                println!("{}", iel);
-                println!("  {} {} {}", tri_vtx_uv[iel*3+0], tri_vtx_uv[iel*3+1], tri_vtx_uv[iel*3+2]);
-                for ifael in 0..3 {
-                    let jel = elsuel[iel*3+ifael];
-                    println!("   {}", jel);
-                    if jel != usize::MAX {
-                        println!("      {} {} {}", tri_vtx_uv[jel*3+0], tri_vtx_uv[jel*3+1], tri_vtx_uv[jel*3+2]);
-                    }
-                }
-            }
- */
-
 fn main() {
     let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();
 
-    let mut drawer = del_gl::drawer_meshpos::DrawerMeshPos::new();
+    let mut drawer = del_gl::mesh::Drawer::new();
     {
         let tri2vtx_xyz: Vec<usize>;
         let vtx2xyz: Vec<f32>;
@@ -51,18 +36,18 @@ fn main() {
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
         for i_group in 0..num_group {
-            let mut tri_vtx0 = Vec::<usize>::new();
+            let mut tri2vtx0 = Vec::<usize>::new();
             for i_elem in 0..elem_group.len() {
                 if elem_group[i_elem] == i_group {
-                    tri_vtx0.push(tri2vtx_xyz[i_elem*3+0]);
-                    tri_vtx0.push(tri2vtx_xyz[i_elem*3+1]);
-                    tri_vtx0.push(tri2vtx_xyz[i_elem*3+2]);
+                    tri2vtx0.push(tri2vtx_xyz[i_elem*3+0]);
+                    tri2vtx0.push(tri2vtx_xyz[i_elem*3+1]);
+                    tri2vtx0.push(tri2vtx_xyz[i_elem*3+2]);
                 }
             }
             let r = (i_group % 3 + 1) as f32 / 3 as f32;
             let g = (i_group % 4 + 1) as f32 / 4 as f32;
             let b = (i_group % 5 + 1) as f32 / 5 as f32;
-            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx0, [r, g, b]);
+            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx0, [r, g, b]);
         }
         {
             let line_vtx_xyz: Vec<usize> = del_msh::topology_uniform::mshline(
