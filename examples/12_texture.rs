@@ -1,5 +1,4 @@
 use del_gl::gl as gl;
-use image::GenericImageView;
 use image::io::Reader as ImageReader;
 use image::EncodableLayout;
 
@@ -14,26 +13,15 @@ fn main() {
     let (mut viewer, event_loop) = del_gl::glutin::viewer2::Viewer2::open();
 
     unsafe {
-        viewer.gl.Enable(gl::TEXTURE_2D);
-        viewer.gl.ActiveTexture(gl::TEXTURE0);
-        let mut id_tex: gl::types::GLuint = 0;
-        viewer.gl.GenTextures(1, &mut id_tex);
-        viewer.gl.BindTexture(gl::TEXTURE_2D, id_tex);
-        viewer.gl.PixelStorei(gl::UNPACK_ALIGNMENT, 1);
-        viewer.gl.TexImage2D(gl::TEXTURE_2D, 0, gl::RGB.try_into().unwrap(),
-                             img.width().try_into().unwrap(),
-                             img.height().try_into().unwrap(),
-                             0,
-                             gl::RGB,
-                             gl::UNSIGNED_BYTE,
-                             img.as_bytes().as_ptr() as *const _);
-        println!("{:?}", id_tex);
-        viewer.gl.GenerateMipmap(gl::TEXTURE_2D);
+        del_gl::utility::gen_texture(&viewer.gl,
+                    img.width().try_into().unwrap(),
+                    img.height().try_into().unwrap(),
+                    img.as_bytes(), gl::RGB);
     }
 
     let mut drawer = del_gl::mesh_tex::Drawer::new();
     {
-        let vtx2xy = vec!(-1.,-1., 1.,-1., 1.,1., -1.,1.);
+        let vtx2xy = vec!(-1., -1., 1., -1., 1., 1., -1., 1.);
         let tri2vtx = vec!(0, 1, 2, 0, 2, 3);
         let vtx2tex = vec!(0., 0., 1., 0., 1., 1., 0., 1.);
 

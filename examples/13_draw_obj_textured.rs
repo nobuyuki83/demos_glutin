@@ -33,21 +33,10 @@ fn main() {
             println!("{:?}", img.dimensions());
             // println!("{:?}",img.color());
             unsafe {
-                viewer.gl.Enable(gl::TEXTURE_2D);
-                viewer.gl.ActiveTexture(gl::TEXTURE0);
-                let mut id_tex: gl::types::GLuint = 0;
-                viewer.gl.GenTextures(1, &mut id_tex);
-                viewer.gl.BindTexture(gl::TEXTURE_2D, id_tex);
-                viewer.gl.PixelStorei(gl::UNPACK_ALIGNMENT, 1);
-                viewer.gl.TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA.try_into().unwrap(),
-                                     img.width().try_into().unwrap(),
-                                     img.height().try_into().unwrap(),
-                                     0,
-                                     gl::RGBA,
-                                     gl::UNSIGNED_BYTE,
-                                     img.as_bytes().as_ptr() as *const _);
-                println!("{:?}", id_tex);
-                viewer.gl.GenerateMipmap(gl::TEXTURE_2D);
+                del_gl::utility::gen_texture(&viewer.gl,
+                                             img.width().try_into().unwrap(),
+                                             img.height().try_into().unwrap(),
+                                             img.as_bytes(), gl::RGBA);
             }
         }
         //
