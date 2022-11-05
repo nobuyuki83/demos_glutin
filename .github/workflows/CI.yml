@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Checkout dependent repos
+      uses: actions/checkout@v3
+      with:
+        repository: nobuyuki83/del-msh
+        path: del-msh
+
+    - name: Install Rust toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        default: true
+
+    - name: Cargo commands
+      run: |
+        cargo clean
+        cargo build --examples
+        cargo test
+        cargo doc
