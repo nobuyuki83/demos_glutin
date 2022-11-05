@@ -6,34 +6,17 @@ fn main() {
 
     let mut ls = del_ls::linearsystem::Solver::new();
     {  // set pattern to sparse matrix
-        let vtx2tri = del_msh::topology_uniform::elsup(
+        let vtx2vtx = del_msh::topology_uniform::psup2(
             &tri2vtx, 3, vtx2xyz.len() / 3);
-        let vtx2vtx = del_msh::topology_uniform::psup(
-            &tri2vtx,
-            &vtx2tri.0, &vtx2tri.1,
-            3,
-            vtx2xyz.len() / 3);
         ls.initialize(&vtx2vtx.0, &vtx2vtx.1);
     }
 
     // sparse.set_zero();
     ls.begin_mearge();
-    for it in 0..tri2vtx.len() / 3 {
-        let i0 = tri2vtx[it * 3 + 0];
-        let i1 = tri2vtx[it * 3 + 1];
-        let i2 = tri2vtx[it * 3 + 2];
-        let cots = del_geo::tri::cot3(
-            &vtx2xyz[(i0 * 3 + 0)..(i0 * 3 + 3)],
-            &vtx2xyz[(i1 * 3 + 0)..(i1 * 3 + 3)],
-            &vtx2xyz[(i2 * 3 + 0)..(i2 * 3 + 3)]);
-        let emat: [f32; 9] = [
-            cots[1] + cots[2], -cots[2], -cots[1],
-            -cots[2], cots[2] + cots[0], -cots[0],
-            -cots[1], -cots[0], cots[0] + cots[1]];
-        ls.sparse.merge(
-            &[i0, i1, i2], &[i0, i1, i2], &emat,
-            &mut ls.merge_buffer);
-    }
+    del_misc::mesh_laplacian::merge_trimesh3(
+        &mut ls.sparse,
+        &mut ls.merge_buffer,
+        &tri2vtx, &vtx2xyz);
 
     {
         let penalty = 1.0e+3;

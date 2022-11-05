@@ -8,6 +8,7 @@ glutin = "*"
 nalgebra = "*"
 num-traits = "0.2"
 rand = "*"
+image = "*"
 
 del-msh = {path="../del-msh"}
 #del-msh = "*"

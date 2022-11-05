@@ -35,4 +35,10 @@
 ![demo10](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo10.png)
 
 ### 11: Heat distance on a triangle mesh
-![demo11](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo11.png)
+![demo11](https://git`hub.com/nobuyuki83/demos_glutin/raw/imgs/demo11.png)
+
+### 12: Draw Texture
+![demo12](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo12.png)
+
+### 13: Draw Textured Wavefront Obj file
+![demo13](https://git`hub.com/nobuyuki83/demos_glutin/raw/imgs/demo13.png)

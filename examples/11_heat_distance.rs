@@ -6,34 +6,17 @@ fn main() {
 
     let mut ls_laplace = del_ls::linearsystem::Solver::new();
     {  // set pattern to sparse matrix
-        let vtx2tri = del_msh::topology_uniform::elsup(
+        let vtx2vtx = del_msh::topology_uniform::psup2(
             &tri2vtx, 3, vtx2xyz.len() / 3);
-        let vtx2vtx = del_msh::topology_uniform::psup(
-            &tri2vtx,
-            &vtx2tri.0, &vtx2tri.1,
-            3,
-            vtx2xyz.len() / 3);
         ls_laplace.initialize(&vtx2vtx.0, &vtx2vtx.1);
     }
 
     // sparse.set_zero();
     ls_laplace.begin_mearge();
-    for it in 0..tri2vtx.len() / 3 {
-        let i0 = tri2vtx[it * 3 + 0];
-        let i1 = tri2vtx[it * 3 + 1];
-        let i2 = tri2vtx[it * 3 + 2];
-        let cots = del_geo::tri::cot3(
-            &vtx2xyz[(i0 * 3 + 0)..(i0 * 3 + 3)],
-            &vtx2xyz[(i1 * 3 + 0)..(i1 * 3 + 3)],
-            &vtx2xyz[(i2 * 3 + 0)..(i2 * 3 + 3)]);
-        let emat: [f32; 9] = [
-            cots[1] + cots[2], -cots[2], -cots[1],
-            -cots[2], cots[2] + cots[0], -cots[0],
-            -cots[1], -cots[0], cots[0] + cots[1]];
-        ls_laplace.sparse.merge(
-            &[i0, i1, i2], &[i0, i1, i2], &emat,
-            &mut ls_laplace.merge_buffer);
-    }
+    del_misc::mesh_laplacian::merge_trimesh3(
+        &mut ls_laplace.sparse,
+        &mut ls_laplace.merge_buffer,
+        &tri2vtx, &vtx2xyz);
 
     let mut ls_heat = ls_laplace.clone();
 
@@ -68,7 +51,7 @@ fn main() {
         del_misc::heat_distance::divergence_on_trimesh3(
             &mut ls_laplace.r_vec,
             &tri2vtx, &vtx2xyz, &tri2dir);
-        ls_laplace.sparse.val_dia[0] += 10000_f32;
+        ls_laplace.sparse.val_dia[0] += 1000_f32;
     }
     ls_laplace.conv_ratio_tol = 1.0e-5;
     ls_laplace.max_num_iteration = 1000;
@@ -124,7 +107,7 @@ fn main() {
         drawer_edge.initialize(&viewer.gl, &tri2xyz);
     }
 
-    // this clousure captures drawer, viewer and 'move' them. drawer and viewer cannot be usable anymore
+    // this closure captures drawer, viewer and 'move' them. drawer and viewer cannot be usable anymore
     let event_handle_closure = move |event: glutin::event::Event<()>,
                                      _elwt: &glutin::event_loop::EventLoopWindowTarget<()>,
                                      control_flow: &mut glutin::event_loop::ControlFlow| {
