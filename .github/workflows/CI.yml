@@ -34,8 +34,15 @@ jobs:
         default: true
 
     - name: Cargo commands
+      working-directory: demos_glutin
       run: |
+        pwd
+        ls -al
         cargo clean
         cargo build --examples
         cargo test
         cargo doc
+
+        cd ../del-geo
+        pwd
+        ls -al
