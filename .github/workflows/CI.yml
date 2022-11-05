@@ -29,6 +29,24 @@ jobs:
         repository: nobuyuki83/del-geo
         path: del-geo
 
+    - name: Checkout dependent repos
+      uses: actions/checkout@v3
+      with:
+        repository: nobuyuki83/del-gl
+        path: del-gl
+
+    - name: Checkout dependent repos
+      uses: actions/checkout@v3
+      with:
+        repository: nobuyuki83/del-dtri
+        path: del-dtri
+
+    - name: Checkout dependent repos
+      uses: actions/checkout@v3
+      with:
+        repository: nobuyuki83/del-ls
+        path: del-ls
+
     - name: Install Rust toolchain
       uses: actions-rs/toolchain@v1
       with:
