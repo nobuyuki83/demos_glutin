@@ -20,6 +20,12 @@ jobs:
         repository: nobuyuki83/del-msh
         path: del-msh
 
+    - name: Checkout dependent repos
+      uses: actions/checkout@v3
+      with:
+        repository: nobuyuki83/del-geo
+        path: del-geo
+
     - name: Install Rust toolchain
       uses: actions-rs/toolchain@v1
       with:
