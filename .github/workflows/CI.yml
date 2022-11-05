@@ -47,6 +47,12 @@ jobs:
         repository: nobuyuki83/del-ls
         path: del-ls
 
+    - name: Checkout dependent repos
+      uses: actions/checkout@v3
+      with:
+        repository: nobuyuki83/del-misc
+        path: del-misc
+
     - name: Install Rust toolchain
       uses: actions-rs/toolchain@v1
       with:
