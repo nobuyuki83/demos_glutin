@@ -2,19 +2,23 @@
 name = "demos_glutin"
 version = "0.1.0"
 edition = "2021"
+authors = ["Nobuyuki Umetani <n.umetani@gmail.com>"]
+description = "OpenGL 3D graphics demos written in Rust for graphics research prototyping."
 
 [dependencies]
-glutin = "*"
+glutin = "0.29.*"
 nalgebra = "*"
 num-traits = "0.2"
 rand = "*"
 image = "*"
 
 del-msh = {path="../del-msh"}
-#del-msh = "*"
 del-ls = {path="../del-ls"}
-#del-ls = "*"
-del-dtri = "*"
 del-misc = {path="../del-misc"}
 del-gl = {path="../del-gl"}
 del-geo = {path="../del-geo"}
+del-dtri = {path="../del-dtri"}
+
+#del-msh = "*"
+#del-ls = "*"
+
