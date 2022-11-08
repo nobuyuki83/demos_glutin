@@ -25,10 +25,10 @@ fn main() {
         let h0 = del_misc::mesh_property::mean_edge_length_triangles_mesh(&tri2vtx, &vtx2xyz);
         let m0 = 100_f32;
         let t = m0 * h0 * h0;
-        for iv in 0..ls_heat.sparse.val_dia.len() {
-            ls_heat.sparse.val_dia[iv] = ls_heat.sparse.val_dia[iv] * t + vtx2area[iv];
+        for iv in 0..ls_heat.sparse.row2val.len() {
+            ls_heat.sparse.row2val[iv] = ls_heat.sparse.row2val[iv] * t + vtx2area[iv];
         }
-        ls_heat.sparse.val_crs.iter_mut().for_each(|v| *v = (*v) * t );
+        ls_heat.sparse.idx2val.iter_mut().for_each(|v| *v = (*v) * t );
         ls_heat.r_vec[0] = 1.0; // the integrated amount of heat is 1
     }
 
@@ -51,7 +51,7 @@ fn main() {
         del_misc::heat_distance::divergence_on_trimesh3(
             &mut ls_laplace.r_vec,
             &tri2vtx, &vtx2xyz, &tri2dir);
-        ls_laplace.sparse.val_dia[0] += 1000_f32;
+        ls_laplace.sparse.row2val[0] += 1000_f32;
     }
     ls_laplace.conv_ratio_tol = 1.0e-5;
     ls_laplace.max_num_iteration = 1000;

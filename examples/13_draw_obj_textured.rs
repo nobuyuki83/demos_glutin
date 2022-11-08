@@ -15,13 +15,13 @@ fn main() {
             let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
             let filename: &str = "asset/Babi/babi.obj";
             obj.load(filename);
-            let num_elem = obj.elem2vtx_idx.len() - 1;
+            let num_elem = obj.elem2idx.len() - 1;
             println!("element size: {}", num_elem);
-            assert_eq!(obj.elem2vtx_idx[num_elem - 1], (num_elem - 1) * 3);  // triangle mesh
-            tri2vtx_xyz = obj.elem2vtx_xyz;
+            assert_eq!(obj.elem2idx[num_elem - 1], (num_elem - 1) * 3);  // triangle mesh
+            tri2vtx_xyz = obj.idx2vtx_xyz;
             vtx2xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx2xyz, 3);
             vtx2uv = obj.vtx2uv;
-            tri2vtx_uv = obj.elem2vtx_uv;
+            tri2vtx_uv = obj.idx2vtx_uv;
         };
         println!("vertex size: {}", vtx2xyz.len() / 3);
         println!("uv size: {}", vtx2uv.len() / 2);

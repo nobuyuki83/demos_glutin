@@ -12,8 +12,8 @@ fn main() {
             let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
             obj.load(filename);
             println!("vertex size: {}", obj.vtx2xyz.len() / 3);
-            println!("element size: {}", obj.elem2vtx_idx.len() - 1);
-            tri2vtx = obj.elem2vtx_xyz;
+            println!("element size: {}", obj.elem2idx.len() - 1);
+            tri2vtx = obj.idx2vtx_xyz;
             vtx2xyz = obj.vtx2xyz.iter().map(|v| *v * 0.03 ).collect();
         }
         let mut vtx2val = Vec::<f32>::new();

@@ -5,28 +5,28 @@ fn main() {
 
     let mut drawer = del_gl::mesh::Drawer::new();
     {
-        let elem2vtx_idx: Vec<usize>;
-        let elem2vtx_xyz: Vec<usize>;
+        let elem2idx: Vec<usize>;
+        let idx2vtx_xyz: Vec<usize>;
         let vtx2xyz: Vec<f32> = {
             let mut obj = del_msh::io_obj::WavefrontObj::<f32>::new();
             let filename: &str = "asset/HorseSwap.obj";
             obj.load(filename);
-            elem2vtx_xyz = obj.elem2vtx_xyz;
-            elem2vtx_idx = obj.elem2vtx_idx;
+            elem2idx = obj.elem2idx;
+            idx2vtx_xyz = obj.idx2vtx_xyz;
             del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx2xyz, 3)
         };
         println!("vertex size: {}", vtx2xyz.len() / 3);
-        println!("element size: {}", elem2vtx_idx.len() -1 );
+        println!("element size: {}", elem2idx.len() -1 );
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
         {
             let tri2vtx = del_msh::topology_mix::meshtri_from_meshtriquad(
-                &elem2vtx_idx, &elem2vtx_xyz);
+                &elem2idx, &idx2vtx_xyz);
             drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
         }
         {
             let line2vtx: Vec<usize> = del_msh::topology_mix::meshline_from_meshtriquad(
-                &elem2vtx_idx, &elem2vtx_xyz,
+                &elem2idx, &idx2vtx_xyz,
                 vtx2xyz.len() / 3);
             drawer.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
         }

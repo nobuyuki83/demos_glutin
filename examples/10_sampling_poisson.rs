@@ -12,7 +12,7 @@ fn main() {
             vtx2xyz.len() / 3);
         let cumulative_area_sum = del_msh::sampling::cumulative_area_sum(&vtx2xyz, &tri2vtx);
         let mut tri2smpl = std::collections::HashMap::<usize, Vec<usize>>::new();
-        let rad = 0.1_f32;
+        let rad = 0.15_f32;
         let mut rng = rand::thread_rng();
         let mut samples = Vec::<(usize, f32, f32)>::new();
         for _itr in 0..1000 {

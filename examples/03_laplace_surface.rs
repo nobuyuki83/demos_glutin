@@ -24,10 +24,10 @@ fn main() {
             let y = vtx2xyz[iv * 3 + 1];
             if y < -0.89 {
                 ls.r_vec[iv] = penalty * 0.;
-                ls.sparse.val_dia[iv] += penalty;
+                ls.sparse.row2val[iv] += penalty;
             } else if y > 0.89 {
                 ls.r_vec[iv] = penalty * 1.;
-                ls.sparse.val_dia[iv] += penalty;
+                ls.sparse.row2val[iv] += penalty;
             }
         }
     }
