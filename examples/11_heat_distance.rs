@@ -40,7 +40,7 @@ fn main() {
 
     let tri2dir = {
         let mut tri2dir = vec!(0_f32; tri2vtx.len());
-        del_misc::heat_distance::direction_gradient_on_surface(
+        del_misc::heat_distance::gradient_on_trimsh3(
             &mut tri2dir,
             &tri2vtx, &vtx2xyz, &vtx2heat);
         tri2dir

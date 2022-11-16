@@ -37,8 +37,11 @@
 ### 11: Heat distance on a triangle mesh
 ![demo11](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo11.png)
 
-### 12: Draw Texture
+### 12: Drawing Texture
 ![demo12](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo12.png)
 
-### 13: Draw Textured Wavefront Obj file
+### 13: Drawing Textured Wavefront Obj file
 ![demo13](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo13.png)
+
+### 14: Solving Biharmonic equation 
+![demo13](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo14.png)

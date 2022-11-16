@@ -4,10 +4,10 @@ fn laplacian() {
         "asset/bunny_11k.obj", Some(1.5));
 
     let lap = {
-        let mut lap = del_ls::sparse_square::Matrix::new();
+        let mut lap = del_ls::sparse_square::Matrix::<f32>::new();
         let vtx2vtx = del_msh::topology_uniform::psup2(
             &tri2vtx, 3, vtx2xyz.len() / 3);
-        lap.initialize_as_square_matrix(&vtx2vtx.0, &vtx2vtx.1);
+        lap.symbolic_initialization(&vtx2vtx.0, &vtx2vtx.1);
         lap.set_zero();
         del_misc::mesh_laplacian::merge_trimesh3(
             &mut lap,
@@ -43,5 +43,6 @@ fn laplacian() {
 
         let a0 = del_ls::slice::dot(&d_vec1, &d_vec1);
         println!("{}", a0);
+        assert!(a0<1.0e-5);
     }
 }
