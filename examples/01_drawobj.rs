@@ -11,7 +11,7 @@ fn main() {
         drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
         drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
         {
-            let line2vtx: Vec<usize> = del_msh::topology_uniform::mshline(
+            let line2vtx: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
                 &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xyz.len() / 3);

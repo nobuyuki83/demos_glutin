@@ -24,7 +24,7 @@ fn main() {
         println!("vertex size: {}", vtx_xyz2xyz.len() / 3);
         println!("uv size: {}", vtx_uv2uv.len() / 2);
         let (num_group, tri2group) = {
-            let tri2tri = del_msh::topology_uniform::elsuel2(
+            let tri2tri = del_msh::elem2elem::from_uniform_mesh2(
                 &tri2vtx_uv, 3,
                 &[0,2,4,6], &[1,2,2,0,0,1],
                 vtx_uv2uv.len() / 2);
@@ -50,7 +50,7 @@ fn main() {
             drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx0, [r, g, b]);
         }
         {
-            let line2vtx_xyz: Vec<usize> = del_msh::topology_uniform::mshline(
+            let line2vtx_xyz: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
                 &tri2vtx_xyz, 3,
                 &[0,1,1,2,2,0],
                 vtx_xyz2xyz.len() / 3);

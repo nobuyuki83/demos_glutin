@@ -11,11 +11,11 @@ fn main() {
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx2xyz, 2);
         {
-            let tri2vtx = del_msh::topology_uniform::tri_from_quad(&quad2vtx);
+            let tri2vtx = del_msh::tri2vtx::from_quad_mesh(&quad2vtx);
             drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
         }
         {
-            let line2vtx: Vec<usize> = del_msh::topology_uniform::mshline(
+            let line2vtx: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
                 &quad2vtx, 4,
                 &[0, 1, 1, 2, 2, 3, 3, 0],
                 vtx2xyz.len() / 2);

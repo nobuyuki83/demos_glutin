@@ -43,7 +43,7 @@ fn main() {
         drawer.compile_shader(&viewer.gl);
         {
             let (uni2xyz, uni2uv, tri2uni, _, _)
-                =  del_msh::topology_uniform::unify_separate_trimesh_indexing_xyz_uv(
+                =  del_msh::unify_index::unify_separate_trimesh_indexing_xyz_uv(
                 &vtx2xyz, &vtx2uv,
                 &tri2vtx_xyz,
                 &tri2vtx_uv);

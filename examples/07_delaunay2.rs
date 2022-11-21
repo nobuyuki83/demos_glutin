@@ -125,7 +125,7 @@ fn main() {
         };
         drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx0, [1., 0., 0.]);
         {
-            let line_vtx: Vec<usize> = del_msh::topology_uniform::mshline(
+            let line_vtx: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
                 &tri_vtx0, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xy.len());

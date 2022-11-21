@@ -5,7 +5,7 @@ fn laplacian() {
 
     let lap = {
         let mut lap = del_ls::sparse_square::Matrix::<f32>::new();
-        let vtx2vtx = del_msh::topology_uniform::psup2(
+        let vtx2vtx = del_msh::vtx2vtx::from_uniform_mesh2(
             &tri2vtx, 3, vtx2xyz.len() / 3);
         lap.symbolic_initialization(&vtx2vtx.0, &vtx2vtx.1);
         lap.set_zero();

@@ -5,7 +5,7 @@ fn main() {
         "asset/bunny_1k.obj", Some(1.5));
 
     let mut ls = {  // set pattern to sparse matrix
-        let vtx2vtx = del_msh::topology_uniform::psup2(
+        let vtx2vtx = del_msh::vtx2vtx::from_uniform_mesh2(
             &tri2vtx, 3, vtx2xyz.len() / 3);
         let mut m = del_ls::sparse_square::Matrix::<f64>::new();
         m.symbolic_initialization(&vtx2vtx.0, &vtx2vtx.1);
@@ -28,6 +28,7 @@ fn main() {
             ls.sparse.row2val[ivtx0] += penalty;
         }
         ls.ilu.initialize_iluk(&ls.sparse, 3);
+        // ls.ilu.initialize_full(ls.sparse.num_blk);
         println!("{}",ls.ilu.idx2col.len());
         del_ls::sparse_ilu::copy_value(&mut ls.ilu, &ls.sparse);
         del_ls::sparse_ilu::decompose(&mut ls.ilu);

@@ -6,7 +6,7 @@ fn main() {
         "asset/bunny_1k.obj", Some(1.5));
 
     let samples = {
-        let tri2adjtri = del_msh::topology_uniform::elsuel2(
+        let tri2adjtri = del_msh::elem2elem::from_uniform_mesh2(
             &tri2vtx, 3,
             &[0,2,4,6], &[1,2,2,0,0,1],
             vtx2xyz.len() / 3);
@@ -40,7 +40,7 @@ fn main() {
         drawer_mesh.update_vertex(&viewer.gl, &vtx2xyz, 3);
         drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 1., 1.]);
         {
-            let line2vtx: Vec<usize> = del_msh::topology_uniform::mshline(
+            let line2vtx: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
                 &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xyz.len() / 3);

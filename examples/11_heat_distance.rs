@@ -6,7 +6,7 @@ fn main() {
 
     let mut ls_laplace = del_ls::linearsystem::Solver::new();
     {  // set pattern to sparse matrix
-        let vtx2vtx = del_msh::topology_uniform::psup2(
+        let vtx2vtx = del_msh::vtx2vtx::from_uniform_mesh2(
             &tri2vtx, 3, vtx2xyz.len() / 3);
         ls_laplace.initialize(&vtx2vtx.0, &vtx2vtx.1);
     }
