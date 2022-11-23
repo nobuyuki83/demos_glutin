@@ -36,15 +36,19 @@ fn main() {
     let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();
     let mut drawer_mesh = del_gl::mesh::Drawer::new();
     {
-        drawer_mesh.compile_shader(&viewer.gl);
-        drawer_mesh.update_vertex(&viewer.gl, &vtx2xyz, 3);
-        drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 1., 1.]);
+        unsafe {
+            drawer_mesh.compile_shader(&viewer.gl);
+            drawer_mesh.update_vertex(&viewer.gl, &vtx2xyz, 3);
+            drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 1., 1.]);
+        }
         {
             let line2vtx: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
                 &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xyz.len() / 3);
-            drawer_mesh.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
+            unsafe {
+                drawer_mesh.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
+            }
         }
     }
 
@@ -52,9 +56,11 @@ fn main() {
     {
         let sphere_meshtri3 = del_msh::primitive::sphere_tri3::<f32>(
             1., 8, 16);
-        drawer_sphere.compile_shader(&viewer.gl);
-        drawer_sphere.update_vertex(&viewer.gl, &(sphere_meshtri3.0), 3);
-        drawer_sphere.add_element(&viewer.gl, gl::TRIANGLES, &sphere_meshtri3.1, [1., 0., 0.]);
+        unsafe {
+            drawer_sphere.compile_shader(&viewer.gl);
+            drawer_sphere.update_vertex(&viewer.gl, &(sphere_meshtri3.0), 3);
+            drawer_sphere.add_element(&viewer.gl, gl::TRIANGLES, &sphere_meshtri3.1, [1., 0., 0.]);
+        }
     }
     let mut transform_sphere = del_misc::nalgebra::scale_rot_trans::ScaleRotTrans::new();
     transform_sphere.s = 0.03;

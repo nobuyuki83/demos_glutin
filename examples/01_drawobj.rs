@@ -7,15 +7,19 @@ fn main() {
     {
         let (tri2vtx, vtx2xyz) = del_msh::io_obj::load_tri_mesh(
             "asset/bunny_11k.obj", Some(1.5));
-        drawer.compile_shader(&viewer.gl);
-        drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
-        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
+        unsafe {
+            drawer.compile_shader(&viewer.gl);
+            drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
+            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
+        }
         {
             let line2vtx: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
                 &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xyz.len() / 3);
-            drawer.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
+            unsafe {
+                drawer.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
+            }
         }
     }
 

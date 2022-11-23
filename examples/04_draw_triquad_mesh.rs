@@ -17,18 +17,24 @@ fn main() {
         };
         println!("vertex size: {}", vtx2xyz.len() / 3);
         println!("element size: {}", elem2idx.len() -1 );
-        drawer.compile_shader(&viewer.gl);
-        drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
+        unsafe {
+            drawer.compile_shader(&viewer.gl);
+            drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
+        }
         {
-            let tri2vtx = del_msh::tri2vtx::from_tri_quad_mesh(
+            let (tri2vtx,_) = del_msh::tri2vtx::from_tri_quad_mesh(
                 &elem2idx, &idx2vtx_xyz);
-            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
+            unsafe {
+                drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
+            }
         }
         {
             let line2vtx: Vec<usize> = del_msh::line2vtx::from_tri_quad_mesh(
                 &elem2idx, &idx2vtx_xyz,
                 vtx2xyz.len() / 3);
-            drawer.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
+            unsafe {
+                drawer.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
+            }
         }
     }
 

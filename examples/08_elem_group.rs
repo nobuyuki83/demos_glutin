@@ -33,8 +33,10 @@ fn main() {
             (num_group, tri2group)
         };
         println!("num_group: {}",num_group);
-        drawer.compile_shader(&viewer.gl);
-        drawer.update_vertex(&viewer.gl, &vtx_xyz2xyz, 3);
+        unsafe {
+            drawer.compile_shader(&viewer.gl);
+            drawer.update_vertex(&viewer.gl, &vtx_xyz2xyz, 3);
+        }
         for i_group in 0..num_group {
             let mut tri2vtx0 = Vec::<usize>::new();
             for i_elem in 0..tri2group.len() {
@@ -47,14 +49,18 @@ fn main() {
             let r = (i_group % 3 + 1) as f32 / 3 as f32;
             let g = (i_group % 4 + 1) as f32 / 4 as f32;
             let b = (i_group % 5 + 1) as f32 / 5 as f32;
-            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx0, [r, g, b]);
+            unsafe {
+                drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx0, [r, g, b]);
+            }
         }
         {
             let line2vtx_xyz: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
                 &tri2vtx_xyz, 3,
                 &[0,1,1,2,2,0],
                 vtx_xyz2xyz.len() / 3);
-            drawer.add_element(&viewer.gl, gl::LINES, &line2vtx_xyz, [0., 0., 0.]);
+            unsafe {
+                drawer.add_element(&viewer.gl, gl::LINES, &line2vtx_xyz, [0., 0., 0.]);
+            }
         }
     }
 
