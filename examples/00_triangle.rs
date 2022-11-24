@@ -18,18 +18,19 @@ fn main() {
     println!("Pixel format of the window's GL context: {:?}", windowed_context.get_pixel_format());
 
     let gl = gl::Gl::load_with(|ptr| windowed_context.context().get_proc_address(ptr) as *const _);
-    let version = unsafe {
+    unsafe {
         let data = std::ffi::CStr::from_ptr(gl.GetString(gl::VERSION) as *const _).to_bytes().to_vec();
-        String::from_utf8(data).unwrap()
-    };
-
-    println!("OpenGL version {}", version);
+        let version = String::from_utf8(data).unwrap();
+        println!("OpenGL version {}", version);
+    }
 
     let mut drawer = del_gl::array_vtxcolor::Drawer { program: 0, mode: gl::TRIANGLES };
-    drawer.compile_shader(&gl);
-    drawer.initialize(
-        &gl,
-        &vtx2xyzrgb);
+    unsafe {
+        drawer.compile_shader(&gl);
+        drawer.initialize(
+            &gl,
+            &vtx2xyzrgb);
+    }
 
     el.run(move |event, _, control_flow| {
         // println!("{:?}", event);
@@ -46,8 +47,8 @@ fn main() {
                 unsafe {
                     gl.ClearColor(0.8, 0.8, 1.0, 1.0);
                     gl.Clear(gl::COLOR_BUFFER_BIT);
+                    drawer.draw_frame(&gl);
                 }
-                drawer.draw_frame(&gl);
                 windowed_context.swap_buffers().unwrap();
             }
             _ => (),
