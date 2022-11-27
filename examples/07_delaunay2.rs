@@ -105,18 +105,14 @@ fn main() {
 
     let mut drawer = del_gl::mesh::Drawer::new();
     {
-        unsafe {
-            drawer.compile_shader(&viewer.gl);
-        }
+        drawer.compile_shader(&viewer.gl);
         {
             let mut vtx_xyz = Vec::<f32>::new();
             for p in &vtx2xy {
                 vtx_xyz.push(p.x);
                 vtx_xyz.push(p.y);
             }
-            unsafe {
-                drawer.update_vertex(&viewer.gl, &vtx_xyz, 2);
-            }
+            drawer.update_vertex(&viewer.gl, &vtx_xyz, 2);
         }
         let tri_vtx0 = {
             let mut tri_vtx0 = Vec::<usize>::new();
@@ -127,17 +123,14 @@ fn main() {
             }
             tri_vtx0
         };
-        unsafe {
-            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx0, [1., 0., 0.]);
-        }
+        drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx0, [1., 0., 0.]);
+
         {
-            let line_vtx: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
+            let line_vtx: Vec<usize> = del_msh::line2vtx::from_epecific_edges_of_uniform_mesh(
                 &tri_vtx0, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xy.len());
-            unsafe {
-                drawer.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
-            }
+            drawer.add_element(&viewer.gl, gl::LINES, &line_vtx, [0., 0., 0.]);
         }
     }
 

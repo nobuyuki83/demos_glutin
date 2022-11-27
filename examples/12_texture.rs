@@ -14,9 +14,9 @@ fn main() {
 
     unsafe {
         del_gl::utility::gen_texture(&viewer.gl,
-                    img.width().try_into().unwrap(),
-                    img.height().try_into().unwrap(),
-                    img.as_bytes(), gl::RGB);
+                                     img.width().try_into().unwrap(),
+                                     img.height().try_into().unwrap(),
+                                     img.as_bytes(), gl::RGB);
     }
 
     let mut drawer = del_gl::mesh_tex::Drawer::new();
@@ -24,13 +24,12 @@ fn main() {
         let vtx2xy = vec!(-1., -1., 1., -1., 1., 1., -1., 1.);
         let tri2vtx = vec!(0, 1, 2, 0, 2, 3);
         let vtx2tex = vec!(0., 0., 1., 0., 1., 1., 0., 1.);
-
         drawer.compile_shader(&viewer.gl);
         drawer.update_vertex(&viewer.gl, &vtx2xy, 2);
         drawer.set_texture_uv(&viewer.gl, &vtx2tex);
         drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, None);
         {
-            let line2vtx: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
+            let line2vtx: Vec<usize> = del_msh::line2vtx::from_epecific_edges_of_uniform_mesh(
                 &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xy.len() / 2);

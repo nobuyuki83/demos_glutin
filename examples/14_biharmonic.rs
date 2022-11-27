@@ -24,12 +24,12 @@ fn main() {
             ls.r_vec[10] += penalty;
             ls.sparse.row2val[10] += penalty;
             //
-            let ivtx0 : usize = 100;
+            let ivtx0: usize = 100;
             ls.sparse.row2val[ivtx0] += penalty;
         }
         ls.ilu.initialize_iluk(&ls.sparse, 3);
         // ls.ilu.initialize_full(ls.sparse.num_blk);
-        println!("{}",ls.ilu.idx2col.len());
+        println!("{}", ls.ilu.idx2col.len());
         del_ls::sparse_ilu::copy_value(&mut ls.ilu, &ls.sparse);
         del_ls::sparse_ilu::decompose(&mut ls.ilu);
         ls
@@ -41,7 +41,7 @@ fn main() {
     println!("num_iteration for heat: {}", ls.conv.len());
     println!("{:?}", ls.conv.last());
     let vtx2heat = ls.u_vec.clone();
-    let vtx2heat = vtx2heat.iter().map(|v| *v as f32 ).collect();
+    let vtx2heat = vtx2heat.iter().map(|v| *v as f32).collect();
     //println!("{:?}",vtx2heat);
 
     let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();

@@ -8,7 +8,7 @@ fn main() {
     let samples = {
         let tri2adjtri = del_msh::elem2elem::from_uniform_mesh2(
             &tri2vtx, 3,
-            &[0,2,4,6], &[1,2,2,0,0,1],
+            &[0, 2, 4, 6], &[1, 2, 2, 0, 0, 1],
             vtx2xyz.len() / 3);
         let cumulative_area_sum = del_msh::sampling::cumulative_area_sum(&vtx2xyz, &tri2vtx);
         let mut tri2smpl = std::collections::HashMap::<usize, Vec<usize>>::new();
@@ -23,7 +23,7 @@ fn main() {
                 &vtx2xyz, &tri2vtx, &tri2adjtri);
             if !is_near {
                 match tri2smpl.get_mut(&sample_i.0) {
-                    Some(v) => { v.push(samples.len()); },
+                    Some(v) => { v.push(samples.len()); }
                     None => { tri2smpl.insert(sample_i.0, vec!(samples.len())); }
                 }
                 samples.push(sample_i);
@@ -36,19 +36,15 @@ fn main() {
     let (mut viewer, event_loop) = del_gl::glutin::viewer3::Viewer3::open();
     let mut drawer_mesh = del_gl::mesh::Drawer::new();
     {
-        unsafe {
-            drawer_mesh.compile_shader(&viewer.gl);
-            drawer_mesh.update_vertex(&viewer.gl, &vtx2xyz, 3);
-            drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 1., 1.]);
-        }
+        drawer_mesh.compile_shader(&viewer.gl);
+        drawer_mesh.update_vertex(&viewer.gl, &vtx2xyz, 3);
+        drawer_mesh.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 1., 1.]);
         {
-            let line2vtx: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
+            let line2vtx: Vec<usize> = del_msh::line2vtx::from_epecific_edges_of_uniform_mesh(
                 &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xyz.len() / 3);
-            unsafe {
-                drawer_mesh.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
-            }
+            drawer_mesh.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
         }
     }
 
@@ -56,11 +52,9 @@ fn main() {
     {
         let sphere_meshtri3 = del_msh::primitive::sphere_tri3::<f32>(
             1., 8, 16);
-        unsafe {
-            drawer_sphere.compile_shader(&viewer.gl);
-            drawer_sphere.update_vertex(&viewer.gl, &(sphere_meshtri3.0), 3);
-            drawer_sphere.add_element(&viewer.gl, gl::TRIANGLES, &sphere_meshtri3.1, [1., 0., 0.]);
-        }
+        drawer_sphere.compile_shader(&viewer.gl);
+        drawer_sphere.update_vertex(&viewer.gl, &(sphere_meshtri3.0), 3);
+        drawer_sphere.add_element(&viewer.gl, gl::TRIANGLES, &sphere_meshtri3.1, [1., 0., 0.]);
     }
     let mut transform_sphere = del_misc::nalgebra::scale_rot_trans::ScaleRotTrans::new();
     transform_sphere.s = 0.03;

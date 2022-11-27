@@ -25,12 +25,11 @@ fn main() {
     }
 
     let mut drawer = del_gl::array_vtxcolor::Drawer { program: 0, mode: gl::TRIANGLES };
-    unsafe {
-        drawer.compile_shader(&gl);
-        drawer.initialize(
-            &gl,
-            &vtx2xyzrgb);
-    }
+    drawer.compile_shader(&gl);
+    drawer.initialize(
+        &gl,
+        &vtx2xyzrgb);
+
 
     el.run(move |event, _, control_flow| {
         // println!("{:?}", event);

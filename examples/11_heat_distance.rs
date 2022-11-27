@@ -28,7 +28,7 @@ fn main() {
         for iv in 0..ls_heat.sparse.row2val.len() {
             ls_heat.sparse.row2val[iv] = ls_heat.sparse.row2val[iv] * t + vtx2area[iv];
         }
-        ls_heat.sparse.idx2val.iter_mut().for_each(|v| *v = (*v) * t );
+        ls_heat.sparse.idx2val.iter_mut().for_each(|v| *v = (*v) * t);
         ls_heat.r_vec[0] = 1.0; // the integrated amount of heat is 1
     }
 

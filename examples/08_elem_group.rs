@@ -15,7 +15,7 @@ fn main() {
             obj.load(filename);
             let num_elem = obj.elem2idx.len() - 1;
             println!("element size: {}", num_elem);
-            assert_eq!(obj.elem2idx[num_elem-1], (num_elem-1)*3);  // triangle mesh
+            assert_eq!(obj.elem2idx[num_elem - 1], (num_elem - 1) * 3);  // triangle mesh
             tri2vtx_xyz = obj.idx2vtx_xyz;
             vtx_xyz2xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(obj.vtx2xyz, 3);
             vtx_uv2uv = obj.vtx2uv;
@@ -26,41 +26,35 @@ fn main() {
         let (num_group, tri2group) = {
             let tri2tri = del_msh::elem2elem::from_uniform_mesh2(
                 &tri2vtx_uv, 3,
-                &[0,2,4,6], &[1,2,2,0,0,1],
+                &[0, 2, 4, 6], &[1, 2, 2, 0, 0, 1],
                 vtx_uv2uv.len() / 2);
             let (num_group, tri2group) = del_msh::group::make_group_elem(
                 &tri2vtx_uv, 3, &tri2tri);
             (num_group, tri2group)
         };
-        println!("num_group: {}",num_group);
-        unsafe {
-            drawer.compile_shader(&viewer.gl);
-            drawer.update_vertex(&viewer.gl, &vtx_xyz2xyz, 3);
-        }
+        println!("num_group: {}", num_group);
+        drawer.compile_shader(&viewer.gl);
+        drawer.update_vertex(&viewer.gl, &vtx_xyz2xyz, 3);
         for i_group in 0..num_group {
             let mut tri2vtx0 = Vec::<usize>::new();
             for i_elem in 0..tri2group.len() {
                 if tri2group[i_elem] == i_group {
-                    tri2vtx0.push(tri2vtx_xyz[i_elem*3+0]);
-                    tri2vtx0.push(tri2vtx_xyz[i_elem*3+1]);
-                    tri2vtx0.push(tri2vtx_xyz[i_elem*3+2]);
+                    tri2vtx0.push(tri2vtx_xyz[i_elem * 3 + 0]);
+                    tri2vtx0.push(tri2vtx_xyz[i_elem * 3 + 1]);
+                    tri2vtx0.push(tri2vtx_xyz[i_elem * 3 + 2]);
                 }
             }
             let r = (i_group % 3 + 1) as f32 / 3 as f32;
             let g = (i_group % 4 + 1) as f32 / 4 as f32;
             let b = (i_group % 5 + 1) as f32 / 5 as f32;
-            unsafe {
-                drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx0, [r, g, b]);
-            }
+            drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx0, [r, g, b]);
         }
         {
-            let line2vtx_xyz: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
+            let line2vtx_xyz: Vec<usize> = del_msh::line2vtx::from_epecific_edges_of_uniform_mesh(
                 &tri2vtx_xyz, 3,
-                &[0,1,1,2,2,0],
+                &[0, 1, 1, 2, 2, 0],
                 vtx_xyz2xyz.len() / 3);
-            unsafe {
-                drawer.add_element(&viewer.gl, gl::LINES, &line2vtx_xyz, [0., 0., 0.]);
-            }
+            drawer.add_element(&viewer.gl, gl::LINES, &line2vtx_xyz, [0., 0., 0.]);
         }
     }
 

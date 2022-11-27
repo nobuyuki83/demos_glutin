@@ -7,19 +7,16 @@ fn main() {
     {
         let (tri2vtx, vtx2xyz) = del_msh::io_obj::load_tri_mesh(
             "asset/bunny_11k.obj", Some(1.5));
-        unsafe {
             drawer.compile_shader(&viewer.gl);
             drawer.update_vertex(&viewer.gl, &vtx2xyz, 3);
             drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
-        }
         {
-            let line2vtx: Vec<usize> = del_msh::line2vtx::from_uniform_mesh(
+            let line2vtx: Vec<usize> = del_msh::line2vtx::from_epecific_edges_of_uniform_mesh(
                 &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xyz.len() / 3);
-            unsafe {
-                drawer.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
-            }
+            drawer.add_element(&viewer.gl, gl::LINES, &line2vtx, [0., 0., 0.]);
+
         }
     }
 
@@ -35,10 +32,10 @@ fn main() {
             let mat_projection = viewer.nav.projection_matrix(
                 viewer.ui_state.win_width, viewer.ui_state.win_height);
             let mat_modelview = viewer.nav.modelview_matrix();
-            drawer.draw(
-                &viewer.gl,
-                mat_modelview.as_slice(), // nalgebra is column major same as OpenGL
-                mat_projection.as_slice()); // nalgebra is column major same as OpenGL
+                drawer.draw(
+                    &viewer.gl,
+                    mat_modelview.as_slice(), // nalgebra is column major same as OpenGL
+                    mat_projection.as_slice()); // nalgebra is column major same as OpenGL
             viewer.windowed_context.swap_buffers().unwrap();
         }
     };
