@@ -1,27 +1,27 @@
 use del_gl::gl as gl;
 
 fn resampling_loops(
-    loop2vtx_idx: &mut Vec<usize>,
-    loop2vtx: &mut Vec<usize>,
+    loop2idx: &mut Vec<usize>,
+    idx2vtx: &mut Vec<usize>,
     vtx2xy: &mut Vec<nalgebra::Vector2<f32>>,
     max_edge_length: f32) {
-    assert_eq!(vtx2xy.len(), loop2vtx.len());
-    let loop2vtx_idx0 = loop2vtx_idx.clone();
-    let loop2vtx0 = loop2vtx.clone();
-    assert!(loop2vtx0.len() >= 2);
-    let nloop = loop2vtx_idx0.len() - 1;
-    let mut point_idxs_in_edges = vec!(Vec::<usize>::new(); loop2vtx0.len());
+    assert_eq!(vtx2xy.len(), idx2vtx.len());
+    let loop2idx_old = loop2idx.clone();
+    let idx2vtx_old = idx2vtx.clone();
+    assert!(idx2vtx_old.len() >= 2);
+    let nloop = loop2idx_old.len() - 1;
+    let mut point_idxs_in_edges = vec!(Vec::<usize>::new(); idx2vtx_old.len());
 
-    for iloop in 0..nloop {
-        assert!(loop2vtx_idx0[iloop + 1] > loop2vtx_idx0[iloop]);
-        let np = loop2vtx_idx0[iloop + 1] - loop2vtx_idx0[iloop];
+    for i_loop in 0..nloop {
+        assert!(loop2idx_old[i_loop + 1] > loop2idx_old[i_loop]);
+        let np = loop2idx_old[i_loop + 1] - loop2idx_old[i_loop];
         for ip in 0..np {
-            let iipo0 = loop2vtx_idx0[iloop] + (ip + 0) % np;
-            let iipo1 = loop2vtx_idx0[iloop] + (ip + 1) % np;
-            assert!(iipo0 < loop2vtx0.len());
-            assert!(iipo1 < loop2vtx0.len());
-            let ipo0 = loop2vtx0[iipo0];
-            let ipo1 = loop2vtx0[iipo1];
+            let iipo0 = loop2idx_old[i_loop] + (ip + 0) % np;
+            let iipo1 = loop2idx_old[i_loop] + (ip + 1) % np;
+            assert!(iipo0 < idx2vtx_old.len());
+            assert!(iipo1 < idx2vtx_old.len());
+            let ipo0 = idx2vtx_old[iipo0];
+            let ipo1 = idx2vtx_old[iipo1];
             assert!(ipo0 < vtx2xy.len());
             assert!(ipo1 < vtx2xy.len());
             let po0 = vtx2xy[ipo0].clone(); // never use reference here because aVec2 will resize afterward
@@ -41,33 +41,33 @@ fn resampling_loops(
         }
     }
     //
-    loop2vtx_idx.resize(nloop + 1, usize::MAX);
-    loop2vtx_idx[0] = 0;
+    loop2idx.resize(nloop + 1, usize::MAX);
+    loop2idx[0] = 0;
     for iloop in 0..nloop {
-        let nbar0 = loop2vtx_idx0[iloop + 1] - loop2vtx_idx0[iloop];
+        let nbar0 = loop2idx_old[iloop + 1] - loop2idx_old[iloop];
         let mut nbar1 = nbar0;
         for ibar in 0..nbar0 {
-            let iip_loop = loop2vtx_idx0[iloop] + ibar;
+            let iip_loop = loop2idx_old[iloop] + ibar;
             nbar1 += point_idxs_in_edges[iip_loop].len();
         }
-        loop2vtx_idx[iloop + 1] = loop2vtx_idx[iloop] + nbar1;
+        loop2idx[iloop + 1] = loop2idx[iloop] + nbar1;
     }
     // adding new vertices on the outline
-    loop2vtx.resize(loop2vtx_idx[nloop], usize::MAX);
+    idx2vtx.resize(loop2idx[nloop], usize::MAX);
     let mut ivtx0 = 0;
     for iloop in 0..nloop {
-        for iip_loop in loop2vtx_idx0[iloop]..loop2vtx_idx0[iloop + 1] {
-            let ip_loop = loop2vtx0[iip_loop];
-            loop2vtx[ivtx0] = ip_loop;
+        for iip_loop in loop2idx_old[iloop]..loop2idx_old[iloop + 1] {
+            let ip_loop = idx2vtx_old[iip_loop];
+            idx2vtx[ivtx0] = ip_loop;
             ivtx0 += 1;
             for iadd in 0..point_idxs_in_edges[ip_loop].len() {
-                loop2vtx[ivtx0] = point_idxs_in_edges[iip_loop][iadd];
+                idx2vtx[ivtx0] = point_idxs_in_edges[iip_loop][iadd];
                 ivtx0 += 1;
             }
         }
     }
-    assert_eq!(loop2vtx.len(), vtx2xy.len());
-    assert_eq!(loop2vtx.len(), ivtx0);
+    assert_eq!(idx2vtx.len(), vtx2xy.len());
+    assert_eq!(idx2vtx.len(), ivtx0);
 }
 
 fn main() {
@@ -80,18 +80,18 @@ fn main() {
     let mut vtx2tri = Vec::<DynamicVertex>::new();
     let mut vtx2xy = Vec::<nalgebra::Vector2<f32>>::new();
     {
-        let mut loop2vtx_idx = vec!(0, 4);
-        let mut loop2vtx = vec!(0, 1, 2, 3);
+        let mut loop2idx = vec!(0, 4);
+        let mut idx2vtx = vec!(0, 1, 2, 3);
         vtx2xy.push(nalgebra::Vector2::<f32>::new(-1.0, -1.0));
         vtx2xy.push(nalgebra::Vector2::<f32>::new(1.0, -1.0));
         vtx2xy.push(nalgebra::Vector2::<f32>::new(1.0, 1.0));
         vtx2xy.push(nalgebra::Vector2::<f32>::new(-1.0, 1.0));
         resampling_loops(
-            &mut loop2vtx_idx, &mut loop2vtx, &mut vtx2xy,
+            &mut loop2idx, &mut idx2vtx, &mut vtx2xy,
             0.12);
         meshing_single_connected_shape2(
             &mut vtx2tri, &mut vtx2xy, &mut tri2vtx,
-            &loop2vtx_idx, &loop2vtx);
+            &loop2idx, &idx2vtx);
         let mut vtx2flg = vec!(0; vtx2tri.len());
         let mut tri2flg = vec!(0; tri2vtx.len());
         let nvtx0 = vtx2xy.len();
@@ -126,7 +126,7 @@ fn main() {
         drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri_vtx0, [1., 0., 0.]);
 
         {
-            let line_vtx: Vec<usize> = del_msh::line2vtx::from_epecific_edges_of_uniform_mesh(
+            let line_vtx: Vec<usize> = del_msh::line2vtx::from_sepecific_edges_of_uniform_mesh(
                 &tri_vtx0, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xy.len());

@@ -2,6 +2,8 @@ use del_gl::gl as gl;
 
 fn main() {
     let (mut viewer, event_loop) = del_gl::glutin::viewer2::Viewer2::open();
+    println!("OpenGL Version: {}", viewer.get_opengl_version());
+    println!("Pixel format of the window's GL context: {:?}", viewer.windowed_context.get_pixel_format());
 
     let mut drawer = del_gl::mesh::Drawer::new();
     {
@@ -15,7 +17,7 @@ fn main() {
             drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, [1., 0., 0.]);
         }
         {
-            let line2vtx: Vec<usize> = del_msh::line2vtx::from_epecific_edges_of_uniform_mesh(
+            let line2vtx: Vec<usize> = del_msh::line2vtx::from_sepecific_edges_of_uniform_mesh(
                 &quad2vtx, 4,
                 &[0, 1, 1, 2, 2, 3, 3, 0],
                 vtx2xyz.len() / 2);

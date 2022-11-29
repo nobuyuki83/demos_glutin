@@ -11,6 +11,8 @@ fn main() {
     //println!("{:?}",img.color());
 
     let (mut viewer, event_loop) = del_gl::glutin::viewer2::Viewer2::open();
+    println!("OpenGL Version: {}", viewer.get_opengl_version());
+    println!("Pixel format of the window's GL context: {:?}", viewer.windowed_context.get_pixel_format());
 
     unsafe {
         del_gl::utility::gen_texture(&viewer.gl,
@@ -29,7 +31,7 @@ fn main() {
         drawer.set_texture_uv(&viewer.gl, &vtx2tex);
         drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx, None);
         {
-            let line2vtx: Vec<usize> = del_msh::line2vtx::from_epecific_edges_of_uniform_mesh(
+            let line2vtx: Vec<usize> = del_msh::line2vtx::from_sepecific_edges_of_uniform_mesh(
                 &tri2vtx, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx2xy.len() / 2);

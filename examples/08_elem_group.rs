@@ -50,7 +50,7 @@ fn main() {
             drawer.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx0, [r, g, b]);
         }
         {
-            let line2vtx_xyz: Vec<usize> = del_msh::line2vtx::from_epecific_edges_of_uniform_mesh(
+            let line2vtx_xyz: Vec<usize> = del_msh::line2vtx::from_sepecific_edges_of_uniform_mesh(
                 &tri2vtx_xyz, 3,
                 &[0, 1, 1, 2, 2, 0],
                 vtx_xyz2xyz.len() / 3);
