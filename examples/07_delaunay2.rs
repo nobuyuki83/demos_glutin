@@ -9,65 +9,65 @@ fn resampling_loops(
     let loop2idx_old = loop2idx.clone();
     let idx2vtx_old = idx2vtx.clone();
     assert!(idx2vtx_old.len() >= 2);
-    let nloop = loop2idx_old.len() - 1;
+    let num_loop = loop2idx_old.len() - 1;
     let mut point_idxs_in_edges = vec!(Vec::<usize>::new(); idx2vtx_old.len());
 
-    for i_loop in 0..nloop {
+    for i_loop in 0..num_loop {
         assert!(loop2idx_old[i_loop + 1] > loop2idx_old[i_loop]);
-        let np = loop2idx_old[i_loop + 1] - loop2idx_old[i_loop];
-        for ip in 0..np {
-            let iipo0 = loop2idx_old[i_loop] + (ip + 0) % np;
-            let iipo1 = loop2idx_old[i_loop] + (ip + 1) % np;
-            assert!(iipo0 < idx2vtx_old.len());
-            assert!(iipo1 < idx2vtx_old.len());
-            let ipo0 = idx2vtx_old[iipo0];
-            let ipo1 = idx2vtx_old[iipo1];
-            assert!(ipo0 < vtx2xy.len());
-            assert!(ipo1 < vtx2xy.len());
-            let po0 = vtx2xy[ipo0].clone(); // never use reference here because aVec2 will resize afterward
-            let po1 = vtx2xy[ipo1].clone(); // never use reference here because aVec2 will resize afterward
-            let nadd = ((po0 - po1).norm() / max_edge_length) as i32;
-            if nadd == 0 {
+        let num_node = loop2idx_old[i_loop + 1] - loop2idx_old[i_loop];
+        for i_node in 0..num_node {
+            let idx0 = loop2idx_old[i_loop] + (i_node + 0) % num_node;
+            let idx1 = loop2idx_old[i_loop] + (i_node + 1) % num_node;
+            assert!(idx0 < idx2vtx_old.len());
+            assert!(idx1 < idx2vtx_old.len());
+            let i_vtx0 = idx2vtx_old[idx0];
+            let i_vtx1 = idx2vtx_old[idx1];
+            assert!(i_vtx0 < vtx2xy.len());
+            assert!(i_vtx1 < vtx2xy.len());
+            let p0 = vtx2xy[i_vtx0].clone(); // never use reference here because aVec2 will resize afterward
+            let p1 = vtx2xy[i_vtx1].clone(); // never use reference here because aVec2 will resize afterward
+            let num_vtx_to_add = ((p0 - p1).norm() / max_edge_length) as i32;
+            if num_vtx_to_add == 0 {
                 continue;
             }
-            for iadd in 0..nadd {
-                let r2 = (iadd + 1) as f32 / (nadd + 1) as f32;
-                let v2 = (1. - r2) * po0 + r2 * po1;
+            for iadd in 0..num_vtx_to_add {
+                let r2 = (iadd + 1) as f32 / (num_vtx_to_add + 1) as f32;
+                let v2 = (1. - r2) * p0 + r2 * p1;
                 let ipo2 = vtx2xy.len();
                 vtx2xy.push(v2);
-                assert!(iipo0 < point_idxs_in_edges.len());
-                point_idxs_in_edges[iipo0].push(ipo2);
+                assert!(idx0 < point_idxs_in_edges.len());
+                point_idxs_in_edges[idx0].push(ipo2);
             }
         }
     }
     //
-    loop2idx.resize(nloop + 1, usize::MAX);
+    loop2idx.resize(num_loop + 1, usize::MAX);
     loop2idx[0] = 0;
-    for iloop in 0..nloop {
-        let nbar0 = loop2idx_old[iloop + 1] - loop2idx_old[iloop];
-        let mut nbar1 = nbar0;
-        for ibar in 0..nbar0 {
-            let iip_loop = loop2idx_old[iloop] + ibar;
-            nbar1 += point_idxs_in_edges[iip_loop].len();
+    for i_loop in 0..num_loop {
+        let num_edge_old = loop2idx_old[i_loop + 1] - loop2idx_old[i_loop];
+        let mut num_edge_new = num_edge_old;
+        for i_edge_old in 0..num_edge_old {
+            let iip_loop = loop2idx_old[i_loop] + i_edge_old;
+            num_edge_new += point_idxs_in_edges[iip_loop].len();
         }
-        loop2idx[iloop + 1] = loop2idx[iloop] + nbar1;
+        loop2idx[i_loop + 1] = loop2idx[i_loop] + num_edge_new;
     }
     // adding new vertices on the outline
-    idx2vtx.resize(loop2idx[nloop], usize::MAX);
-    let mut ivtx0 = 0;
-    for iloop in 0..nloop {
-        for iip_loop in loop2idx_old[iloop]..loop2idx_old[iloop + 1] {
+    idx2vtx.resize(loop2idx[num_loop], usize::MAX);
+    let mut i_vtx0 = 0;
+    for i_loop in 0..num_loop {
+        for iip_loop in loop2idx_old[i_loop]..loop2idx_old[i_loop + 1] {
             let ip_loop = idx2vtx_old[iip_loop];
-            idx2vtx[ivtx0] = ip_loop;
-            ivtx0 += 1;
+            idx2vtx[i_vtx0] = ip_loop;
+            i_vtx0 += 1;
             for iadd in 0..point_idxs_in_edges[ip_loop].len() {
-                idx2vtx[ivtx0] = point_idxs_in_edges[iip_loop][iadd];
-                ivtx0 += 1;
+                idx2vtx[i_vtx0] = point_idxs_in_edges[iip_loop][iadd];
+                i_vtx0 += 1;
             }
         }
     }
     assert_eq!(idx2vtx.len(), vtx2xy.len());
-    assert_eq!(idx2vtx.len(), ivtx0);
+    assert_eq!(idx2vtx.len(), i_vtx0);
 }
 
 fn main() {
@@ -94,14 +94,16 @@ fn main() {
             &loop2idx, &idx2vtx);
         let mut vtx2flg = vec!(0; vtx2tri.len());
         let mut tri2flg = vec!(0; tri2vtx.len());
-        let nvtx0 = vtx2xy.len();
+        let num_vtx = vtx2xy.len();
         meshing_inside(
             &mut vtx2tri, &mut tri2vtx, &mut vtx2xy,
             &mut vtx2flg, &mut tri2flg,
-            nvtx0, 0, 0.12);
+            num_vtx, 0, 0.12);
     }
 
     let (mut viewer, event_loop) = del_gl::glutin::viewer2::Viewer2::open();
+    println!("OpenGL Version: {}", viewer.get_opengl_version());
+    println!("Pixel format:: {:?}", viewer.windowed_context.get_pixel_format());
 
     let mut drawer = del_gl::mesh::Drawer::new();
     {

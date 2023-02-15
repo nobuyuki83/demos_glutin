@@ -7,7 +7,7 @@ fn main() {
     let mut ls = {  // set pattern to sparse matrix
         let vtx2vtx = del_msh::vtx2vtx::from_uniform_mesh2(
             &tri2vtx, 3, vtx2xyz.len() / 3);
-        let mut m = del_ls::sparse_square::Matrix::<f64>::new();
+        let mut m= del_ls::sparse_square::Matrix::<f64>::new();
         m.symbolic_initialization(&vtx2vtx.0, &vtx2vtx.1);
         m.set_zero();
         del_misc::mesh_laplacian::merge_trimesh3(

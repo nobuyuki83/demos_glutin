@@ -38,8 +38,8 @@ fn main() {
         let sphere_meshtri3 = del_msh::primitive::sphere_tri3::<f32>(
             1., 8, 16);
         drawer_sphere.compile_shader(&viewer.gl);
-        drawer_sphere.update_vertex(&viewer.gl, &(sphere_meshtri3.0), 3);
-        drawer_sphere.add_element(&viewer.gl, gl::TRIANGLES, &sphere_meshtri3.1, [1., 0., 0.]);
+        drawer_sphere.update_vertex(&viewer.gl, &(sphere_meshtri3.1), 3);
+        drawer_sphere.add_element(&viewer.gl, gl::TRIANGLES, &sphere_meshtri3.0, [1., 0., 0.]);
     }
     let mut transform_sphere = del_misc::nalgebra::scale_rot_trans::ScaleRotTrans::new();
     transform_sphere.s = 0.01;

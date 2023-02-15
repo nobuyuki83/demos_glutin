@@ -25,9 +25,9 @@ fn main() {
         let sphere_meshtri3 = del_msh::primitive::sphere_tri3::<f32>(
             1., 32, 32);
         use crate::gl::types::GLuint;
-        let tri2vtx0: Vec<GLuint> = sphere_meshtri3.1.iter().map(|i| *i as gl::types::GLuint).collect();
+        let tri2vtx0: Vec<GLuint> = sphere_meshtri3.0.iter().map(|i| *i as gl::types::GLuint).collect();
         drawer_sphere.compile_shader(&viewer.gl);
-        drawer_sphere.update_vertex(&viewer.gl, &(sphere_meshtri3.0), 3);
+        drawer_sphere.update_vertex(&viewer.gl, &(sphere_meshtri3.1), 3);
         drawer_sphere.add_element(&viewer.gl, gl::TRIANGLES, &tri2vtx0, [1., 0., 0.]);
     }
     let mut transform_sphere = del_misc::nalgebra::scale_rot_trans::ScaleRotTrans::new();

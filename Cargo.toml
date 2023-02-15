@@ -13,13 +13,15 @@ rand = "*"
 image = "*"
 
 del-msh = {path="../del-msh"}
+# del-msh = "*"
+
 del-ls = {path="../del-ls"}
+# del-ls = "*"
+
 del-geo = {path="../del-geo"}
 del-dtri = {path="../del-dtri"}
 
 del-misc = {path="../del-misc"}
 del-gl = {path="../del-gl"}
 
-#del-msh = "*"
-#del-ls = "*"
 

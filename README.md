@@ -40,8 +40,11 @@
 ### 12: Drawing Texture
 ![demo12](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo12.png)
 
-### 13: Drawing Textured Wavefront Obj file
+### 13: Drawing textured Wavefront Obj file
 ![demo13](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo13.png)
 
-### 14: Solving Biharmonic equation 
-![demo13](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo14.png)
+### 14: Solving biharmonic equation 
+![demo14](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo14.png)
+
+### 15: Adaptively sampled distance field 
+![demo15](https://github.com/nobuyuki83/demos_glutin/raw/imgs/demo15.png)

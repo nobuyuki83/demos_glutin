@@ -1,7 +1,7 @@
 use del_gl::gl as gl;
 
 fn main() {
-    let (vtx2xyz, tri2vtx) = del_msh::primitive::cylinder_closed_end_tri3(
+    let (tri2vtx, vtx2xyz) = del_msh::primitive::cylinder_closed_end_tri3(
         0.2, 1.8, 16, 32);
 
     let mut ls = del_ls::linearsystem::Solver::new();

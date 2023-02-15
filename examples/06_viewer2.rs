@@ -3,11 +3,11 @@ use del_gl::gl as gl;
 fn main() {
     let (mut viewer, event_loop) = del_gl::glutin::viewer2::Viewer2::open();
     println!("OpenGL Version: {}", viewer.get_opengl_version());
-    println!("Pixel format of the window's GL context: {:?}", viewer.windowed_context.get_pixel_format());
+    println!("Pixel format:: {:?}", viewer.windowed_context.get_pixel_format());
 
     let mut drawer = del_gl::mesh::Drawer::new();
     {
-        let (mut vtx2xyz, quad2vtx) = del_msh::primitive::grid_quad2::<f32>(
+        let (quad2vtx, mut vtx2xyz) = del_msh::primitive::grid_quad2::<f32>(
             32,32);
         vtx2xyz = del_misc::nalgebra::msh_misc::centerize_normalize_boundingbox(vtx2xyz, 2);
         drawer.compile_shader(&viewer.gl);

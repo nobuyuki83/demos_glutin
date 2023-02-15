@@ -12,7 +12,7 @@ fn main() {
 
     let (mut viewer, event_loop) = del_gl::glutin::viewer2::Viewer2::open();
     println!("OpenGL Version: {}", viewer.get_opengl_version());
-    println!("Pixel format of the window's GL context: {:?}", viewer.windowed_context.get_pixel_format());
+    println!("Pixel format: {:?}", viewer.windowed_context.get_pixel_format());
 
     unsafe {
         del_gl::utility::gen_texture(&viewer.gl,
