@@ -98,7 +98,7 @@ fn main() {
         meshing_inside(
             &mut vtx2tri, &mut tri2vtx, &mut vtx2xy,
             &mut vtx2flg, &mut tri2flg,
-            num_vtx, 0, 0.12);
+            num_vtx, 0, 0.12_f32);
     }
 
     let (mut viewer, event_loop) = del_gl::glutin::viewer2::Viewer2::open();

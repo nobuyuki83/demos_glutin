@@ -55,7 +55,7 @@ fn main() {
         if viewer.should_draw {
             let mat_projection = viewer.nav.projection_matrix(
                 viewer.ui_state.win_width, viewer.ui_state.win_height);
-            let mat_modelview = viewer.nav.modelview_matrix();
+            let mat_modelview: nalgebra::Matrix4<f32> = viewer.nav.modelview_matrix();
             drawer_mesh.draw(
                 &viewer.gl,
                 mat_modelview.as_slice(), // nalgebra is column major same as OpenGL

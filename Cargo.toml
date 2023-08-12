@@ -7,7 +7,7 @@ description = "OpenGL 3D graphics demos written in Rust for graphics research pr
 
 [dependencies]
 glutin = "0.29.*"
-nalgebra = "*"
+nalgebra = "0.32.3"
 num-traits = "0.2"
 rand = "*"
 image = "*"
